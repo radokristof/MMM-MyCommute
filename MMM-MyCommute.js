@@ -20,6 +20,7 @@ Module.register('MMM-MyCommute', {
     origin: '65 Front St W, Toronto, ON M5J 1E6',
     startTime: '00:00',
     endTime: '23:59',
+    lang: config.language,
     hideDays: [],
     showSummary: true,
     colorCodeTravelTime: true,
