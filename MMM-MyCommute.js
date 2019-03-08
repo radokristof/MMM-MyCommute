@@ -187,7 +187,7 @@ Module.register('MMM-MyCommute', {
         if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
           var url = 'https://maps.googleapis.com/maps/api/directions/json' + this.getParams(d);
           destinations.push({ url:url, config: d});
-          console.log(url);          
+          //console.log(url);          
         }
 
       }
@@ -216,7 +216,7 @@ Module.register('MMM-MyCommute', {
     params += 'origin=' + encodeURIComponent(this.config.origin);
     params += '&destination=' + encodeURIComponent(dest.destination);
     params += '&key=' + this.config.apikey;
-
+    params += '&language=' + this.config.lang;
     //travel mode
     var mode = 'driving';
     if (dest.mode && this.travelModes.indexOf(dest.mode) != -1) {
