@@ -30,13 +30,7 @@ Module.register('MMM-MyCommute', {
     travelTimeFormatTrim: "left",
     pollFrequency: 10 * 60 * 1000, //every ten minutes, in milliseconds
     maxCalendarEvents: 0,
-    calendarOptions: [{
-      mode: 'driving'
-    },
-    {
-      mode: 'transit',
-      transitMode: 'train'
-    }],
+    calendarOptions: [{mode: 'driving'}],
     destinations: [
       {
         destination: '40 Bay St, Toronto, ON M5J 2X2',
