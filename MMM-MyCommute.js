@@ -30,6 +30,7 @@ Module.register('MMM-MyCommute', {
     travelTimeFormatTrim: "left",
     pollFrequency: 10 * 60 * 1000, //every ten minutes, in milliseconds
     maxCalendarEvents: 0,
+    maxCalendarTime: 24 * 60 * 60 * 1000,
     calendarOptions: [{mode: 'driving'}],
     destinations: [
       {
@@ -184,7 +185,12 @@ Module.register('MMM-MyCommute', {
 
     for ( var i=0; i<payload.length && this.appointmentDestinations.length<this.config.maxCalendarEvents; ++i ) {
       var calevt = payload[i];
-      if ( 'location' in calevt && calevt.location !== undefined && calevt.location !== false ) {
+      if (
+          'location' in calevt &&
+          calevt.location !== undefined &&
+          calevt.location !== false &&
+          calevt.startDate < (Date.now() + this.config.maxCalendarTime)
+      ) {
         this.appointmentDestinations.push.apply(this.appointmentDestinations,
           this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
             label: calevt.title,

@@ -226,11 +226,15 @@ Additionally MMM-MyCommute can show travel times to upcoming events in the defau
   <tbody>
     <tr>
       <td><code>maxCalendarEvents</code></td>
-      <td>Number of routes to show.<br><br><strong>Type:</strong> <code>int</code><br>Defaults to `0`</td>
+      <td>Number of routes to show.<br><br><strong>Type:</strong> <code>int</code><br>Defaults to <code>0</code></td>
+    </tr>
+    <tr>
+      <td><code>maxCalendarTime</code></td>
+      <td>Show routes only for appointments within this timeframe (in milliseconds).<br><br><strong>Type:</strong> <code>int</code><br>Defaults to <code>24 * 60 * 60 * 1000</code> (1 day)</td>
     </tr>
     <tr>
       <td><code>calendarOptions</code></td>
-      <td>An array like the regular `destinations`. For each event all of these options are added as a route. All options from above can be used, except that `label` will be overwritten with the event subject and `destination` with the event location.<br><br><strong>Type:</strong> <code>array</code><br>Defaults to <code>[{mode: 'driving'}]</code></td>
+      <td>An array like the regular <code>destinations</code>. For each event all of these options are added as a route. All options from above can be used, except that <code>label</code> will be overwritten with the event subject and <code>destination</code> with the event location.<br><br><strong>Type:</strong> <code>array</code><br>Defaults to <code>[{mode: 'driving'}]</code></td>
     </tr>
   </tbody>
 </table>
