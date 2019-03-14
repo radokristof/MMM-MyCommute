@@ -29,6 +29,7 @@ Module.register('MMM-MyCommute', {
     travelTimeFormat: "m [min]",
     travelTimeFormatTrim: "left",
     pollFrequency: 10 * 60 * 1000, //every ten minutes, in milliseconds
+    maxCalendarEvents: 0,
     calendarOptions: [{
       mode: 'driving'
     },
@@ -187,22 +188,21 @@ Module.register('MMM-MyCommute', {
       return;
     }
 
-    for ( var i=0; i<payload.length; ++i ) {
+    for ( var i=0; i<payload.length && this.appointmentDestinations.length<this.config.maxCalendarEvents; ++i ) {
       var calevt = payload[i];
       if ( 'location' in calevt && calevt.location !== undefined && calevt.location !== false ) {
-
-        this.config.calendarOptions.forEach( calConfig => {
-          //TODO: plan at time of calevt
-          var routeOptions = Object.assign({}, calConfig, {
+        this.appointmentDestinations.push.apply(this.appointmentDestinations,
+          this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
             label: calevt.title,
-            destination: calevt.location,
-          });
-          Log.log(routeOptions);
-
-          this.appointmentDestinations.push(routeOptions);
-        });
+            destination: calevt.location
+          }))
+        );
       }
     }
+
+    // Make sure appointmentDestinations is not too long
+    // Which could happend because of inner forEach on calendarOptions
+    this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
 
     this.getData();
   },
@@ -210,7 +210,6 @@ Module.register('MMM-MyCommute', {
 
   getDestinations: function() {
     var dests = this.config.destinations.concat(this.appointmentDestinations);
-    console.log("getDestinations: ", dests);
     return dests;
   },
 
@@ -536,7 +535,6 @@ Module.register('MMM-MyCommute', {
       this.hide(0, {lockString: this.identifier});
       this.isHidden = true;
     } else if ( notification === 'CALENDAR_EVENTS' ) {
-      Log.log(this.name + " received calendar events: ", payload);
       this.setAppointmentDestinations(payload);
     }
   }
