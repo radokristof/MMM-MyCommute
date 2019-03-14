@@ -27,16 +27,16 @@ module.exports = NodeHelper.create({
   },
 
 
-	
-	getPredictions: function(payload) {
-		var self = this;
+
+  getPredictions: function(payload) {
+    var self = this;
 
     var returned = 0;
     var predictions = new Array();
 
-		payload.destinations.forEach(function(dest, index) {
-			request({url: dest.url, method: 'GET'}, function(error, response, body) {
-				
+    payload.destinations.forEach(function(dest, index) {
+      request({url: dest.url, method: 'GET'}, function(error, response, body) {
+
         var prediction = new Object({
           config: dest.config
         });
@@ -50,7 +50,7 @@ module.exports = NodeHelper.create({
             console.log("MMM-MyCommute: " + data.error_message);
             prediction.error = true;
           } else {
-  
+
             var routeList = new Array();
             for (var i = 0; i < data.routes.length; i++) {
               var r = data.routes[i];
@@ -83,7 +83,7 @@ module.exports = NodeHelper.create({
               routeList.push(routeObj);
             }
             prediction.routes = routeList;
-            
+
           }
 
         } else {
@@ -101,6 +101,6 @@ module.exports = NodeHelper.create({
 
       });
     });
-	}
-	
+  }
+
 });

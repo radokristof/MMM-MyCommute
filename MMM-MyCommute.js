@@ -29,6 +29,13 @@ Module.register('MMM-MyCommute', {
     travelTimeFormat: "m [min]",
     travelTimeFormatTrim: "left",
     pollFrequency: 10 * 60 * 1000, //every ten minutes, in milliseconds
+    calendarOptions: [{
+      mode: 'driving'
+    },
+    {
+      mode: 'transit',
+      transitMode: 'train'
+    }],
     destinations: [
       {
         destination: '40 Bay St, Toronto, ON M5J 2X2',
@@ -88,7 +95,6 @@ Module.register('MMM-MyCommute', {
     'ferries',
     'indoor'
   ],
-
 
 
   // Icons to use for each transportation mode
@@ -170,15 +176,54 @@ Module.register('MMM-MyCommute', {
     return true;
   },
 
+  appointmentDestinations: [],
+
+  setAppointmentDestinations: function(payload) {
+    this.appointmentDestinations = [];
+
+    if ( this.config.calendarOptions.length == 0) {
+      // No routing configs for calendar events
+      // Skip looking those up then
+      return;
+    }
+
+    for ( var i=0; i<payload.length; ++i ) {
+      var calevt = payload[i];
+      if ( 'location' in calevt && calevt.location !== undefined && calevt.location !== false ) {
+
+        this.config.calendarOptions.forEach( calConfig => {
+          //TODO: plan at time of calevt
+          var routeOptions = Object.assign({}, calConfig, {
+            label: calevt.title,
+            destination: calevt.location,
+          });
+          Log.log(routeOptions);
+
+          this.appointmentDestinations.push(routeOptions);
+        });
+      }
+    }
+
+    this.getData();
+  },
+
+
+  getDestinations: function() {
+    var dests = this.config.destinations.concat(this.appointmentDestinations);
+    console.log("getDestinations: ", dests);
+    return dests;
+  },
+
   getData: function() {
 
     //only poll if in window
     if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
       //build URLs
-      var destinations = new Array();
-      for(var i = 0; i < this.config.destinations.length; i++) {
+      var destinationGetInfo = new Array();
+      var destinations = this.getDestinations();
+      for(var i = 0; i < destinations.length; i++) {
 
-        var d = this.config.destinations[i];
+        var d = destinations[i];
 
         var destStartTime = d.startTime || '00:00';
         var destEndTime = d.endTime || '23:59';
@@ -186,15 +231,14 @@ Module.register('MMM-MyCommute', {
 
         if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
           var url = 'https://maps.googleapis.com/maps/api/directions/json' + this.getParams(d);
-          destinations.push({ url:url, config: d});
-          console.log(url);          
+          destinationGetInfo.push({ url:url, config: d});
         }
 
       }
       this.inWindow = true;
 
-      if (destinations.length > 0) {        
-        this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinations, instanceId: this.identifier});
+      if (destinationGetInfo.length > 0) {        
+        this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
       } else {
         this.hide(1000, {lockString: this.identifier});
         this.inWindow = false;
@@ -361,6 +405,7 @@ Module.register('MMM-MyCommute', {
       return wrapper
     }
 
+    var destinations = this.getDestinations();
     for (var i = 0; i < this.predictions.length; i++) {
 
       var p = this.predictions[i];
@@ -376,7 +421,7 @@ Module.register('MMM-MyCommute', {
       var icon = document.createElement("span");
       icon.className = "transit-mode bright";
       var symbolIcon = 'car';
-      if (this.config.destinations[i].color) {
+      if (destinations[i].color) {
         icon.setAttribute("style", "color:" + p.config.color);
       }
 
@@ -490,6 +535,9 @@ Module.register('MMM-MyCommute', {
     if ( notification == 'DOM_OBJECTS_CREATED' && !this.inWindow) {
       this.hide(0, {lockString: this.identifier});
       this.isHidden = true;
+    } else if ( notification === 'CALENDAR_EVENTS' ) {
+      Log.log(this.name + " received calendar events: ", payload);
+      this.setAppointmentDestinations(payload);
     }
   }
 
