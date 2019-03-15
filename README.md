@@ -213,6 +213,62 @@ Here is an example of an entry in `config.js`
 }
 ```
 
+## Routes for calendar events
+Additionally MMM-MyCommute can show travel times to upcoming events in the default calendar module. The config can be extended with the following options. Routes will be shown for events with a location.
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Descriptio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>maxCalendarEvents</code></td>
+      <td>Number of routes to show.<br><br><strong>Type:</strong> <code>int</code><br>Defaults to <code>0</code></td>
+    </tr>
+    <tr>
+      <td><code>maxCalendarTime</code></td>
+      <td>Show routes only for appointments within this timeframe (in milliseconds).<br><br><strong>Type:</strong> <code>int</code><br>Defaults to <code>24 * 60 * 60 * 1000</code> (1 day)</td>
+    </tr>
+    <tr>
+      <td><code>calendarOptions</code></td>
+      <td>An array like the regular <code>destinations</code>. For each event all of these options are added as a route. All options from above can be used, except that <code>label</code> will be overwritten with the event subject and <code>destination</code> with the event location.<br><br><strong>Type:</strong> <code>array</code><br>Defaults to <code>[{mode: 'driving'}]</code></td>
+    </tr>
+  </tbody>
+</table>
+
+Here is an example of an entry in `config.js` including calendar event routes
+```
+{
+  module: 'MMM-MyCommute',
+  position: 'top_left',
+  config: {
+    apikey: 'API_KEY_FROM_GOOGLE',
+    origin: '65 Front St W, Toronto, ON M5J 1E6',
+    destinations: [
+      {
+        destination: '14 Duncan St Toronto, ON M5H 3G8',
+        label: 'Air Canada Centre',
+        mode: 'walking',
+        color: '#82E5AA'
+      }
+    ],
+    // Additional config for calendar routes:
+    maxCalendarEvents: 2,
+    calendarOptions: [
+      {
+        mode: 'driving'
+      },
+      {
+        mode: 'transit',
+        transitMode: 'train'
+      }
+    ]
+  }
+}
+```
 
 ## Dependencies
 Installed during installation
@@ -222,3 +278,4 @@ Installed during installation
 ## Special Thanks
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
 - [Dominic Marx](https://github.com/domsen123) for creating the original mrx-work-traffic that this module heavily borrows upon.
+- [Chris van Marle](https://github.com/qistoph) for adding calendar based routes.

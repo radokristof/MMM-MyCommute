@@ -30,6 +30,9 @@ Module.register('MMM-MyCommute', {
     travelTimeFormat: "m [min]",
     travelTimeFormatTrim: "left",
     pollFrequency: 10 * 60 * 1000, //every ten minutes, in milliseconds
+    maxCalendarEvents: 0,
+    maxCalendarTime: 24 * 60 * 60 * 1000,
+    calendarOptions: [{mode: 'driving'}],
     destinations: [
       {
         destination: '40 Bay St, Toronto, ON M5J 2X2',
@@ -89,7 +92,6 @@ Module.register('MMM-MyCommute', {
     'ferries',
     'indoor'
   ],
-
 
 
   // Icons to use for each transportation mode
@@ -171,15 +173,58 @@ Module.register('MMM-MyCommute', {
     return true;
   },
 
+  appointmentDestinations: [],
+
+  setAppointmentDestinations: function(payload) {
+    this.appointmentDestinations = [];
+
+    if ( this.config.calendarOptions.length == 0) {
+      // No routing configs for calendar events
+      // Skip looking those up then
+      return;
+    }
+
+    for ( var i=0; i<payload.length && this.appointmentDestinations.length<this.config.maxCalendarEvents; ++i ) {
+      var calevt = payload[i];
+      if (
+          'location' in calevt &&
+          calevt.location !== undefined &&
+          calevt.location !== false &&
+          calevt.startDate < (Date.now() + this.config.maxCalendarTime)
+      ) {
+        this.appointmentDestinations.push.apply(this.appointmentDestinations,
+          this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
+            label: calevt.title,
+            destination: calevt.location,
+            arrival_time: calevt.startDate
+          }))
+        );
+      }
+    }
+
+    // Make sure appointmentDestinations is not too long
+    // Which could happend because of inner forEach on calendarOptions
+    this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
+
+    this.getData();
+  },
+
+
+  getDestinations: function() {
+    var dests = this.config.destinations.concat(this.appointmentDestinations);
+    return dests;
+  },
+
   getData: function() {
 
     //only poll if in window
     if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
       //build URLs
-      var destinations = new Array();
-      for(var i = 0; i < this.config.destinations.length; i++) {
+      var destinationGetInfo = new Array();
+      var destinations = this.getDestinations();
+      for(var i = 0; i < destinations.length; i++) {
 
-        var d = this.config.destinations[i];
+        var d = destinations[i];
 
         var destStartTime = d.startTime || '00:00';
         var destEndTime = d.endTime || '23:59';
@@ -187,15 +232,14 @@ Module.register('MMM-MyCommute', {
 
         if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
           var url = 'https://maps.googleapis.com/maps/api/directions/json' + this.getParams(d);
-          destinations.push({ url:url, config: d});
-          //console.log(url);          
+          destinationGetInfo.push({ url:url, config: d});
         }
 
       }
       this.inWindow = true;
 
-      if (destinations.length > 0) {        
-        this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinations, instanceId: this.identifier});
+      if (destinationGetInfo.length > 0) {        
+        this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
       } else {
         this.hide(1000, {lockString: this.identifier});
         this.inWindow = false;
@@ -265,7 +309,11 @@ Module.register('MMM-MyCommute', {
 
     }
 
-    params += '&departure_time=now'; //needed for time based on traffic conditions
+    if (dest.arrival_time) {
+      params += '&arrival_time=' + dest.arrival_time;
+    } else {
+      params += '&departure_time=now'; //needed for time based on traffic conditions
+    }
 
     return params;
 
@@ -362,6 +410,7 @@ Module.register('MMM-MyCommute', {
       return wrapper
     }
 
+    var destinations = this.getDestinations();
     for (var i = 0; i < this.predictions.length; i++) {
 
       var p = this.predictions[i];
@@ -377,7 +426,7 @@ Module.register('MMM-MyCommute', {
       var icon = document.createElement("span");
       icon.className = "transit-mode bright";
       var symbolIcon = 'car';
-      if (this.config.destinations[i].color) {
+      if (destinations[i].color) {
         icon.setAttribute("style", "color:" + p.config.color);
       }
 
@@ -491,6 +540,8 @@ Module.register('MMM-MyCommute', {
     if ( notification == 'DOM_OBJECTS_CREATED' && !this.inWindow) {
       this.hide(0, {lockString: this.identifier});
       this.isHidden = true;
+    } else if ( notification === 'CALENDAR_EVENTS' ) {
+      this.setAppointmentDestinations(payload);
     }
   }
 
