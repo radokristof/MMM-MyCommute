@@ -147,7 +147,11 @@ Module.register('MMM-MyCommute', {
     }, this.config.pollFrequency);
   },
 
+  suspended: false,
+
   suspend: function() {
+    Log.log(this.name + " suspended");
+    this.suspended = true;
     if(this.interval !== null) {
       clearInterval(this.interval);
       this.interval = null;
@@ -155,6 +159,8 @@ Module.register('MMM-MyCommute', {
   },
 
   resume: function() {
+    Log.log(this.name + " resumed");
+    this.suspended = false;
     if(this.interval === null) {
       // Start data refresh immediately
       this.getData();
@@ -239,6 +245,7 @@ Module.register('MMM-MyCommute', {
   },
 
   getData: function() {
+    Log.log(this.name + " refreshing routes");
 
     //only poll if in window
     if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
@@ -552,7 +559,9 @@ Module.register('MMM-MyCommute', {
         }
       } else {
         this.updateDom();
-        this.show(1000, {lockString: this.identifier});        
+        if ( this.hidden ) {
+          this.show(1000, {lockString: this.identifier});
+        }
       }
       this.isHidden = false;
     }
@@ -566,7 +575,9 @@ Module.register('MMM-MyCommute', {
       this.isHidden = true;
     } else if ( notification === 'CALENDAR_EVENTS' ) {
       this.setAppointmentDestinations(payload);
-      this.getData();
+      if ( !this.suspended ) {
+        this.getData();
+      }
     }
   }
 
