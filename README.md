@@ -3,14 +3,14 @@ This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree
 
 It shows your commute time using Google's Traffic API (requires an API Key from Google).
 
-It is a fork of `mrx-work-traffic` by Dominic Marx.
-https://github.com/domsen123/mrx-work-traffic
+It is a fork of jclarke0000's work
+https://github.com/jclarke0000/MMM-MyCommute/
 
 ![Screen Shot](/../screenshots/MMM-MyCommute-screenshot.png?raw=true "Screen Shot")
 
 # Installation
 1. Navigate into your MagicMirror `modules` folder and execute<br>
-`git clone https://github.com/jclarke0000/MMM-MyCommute.git`.
+`git clone https://github.com/qistoph/MMM-MyCommute.git`.
 2. Enter the `MMM-MyCommute` directory and execute `npm install`.
 3. Go to https://developers.google.com/maps/documentation/javascript/get-api-key and get an API key.
 
@@ -275,7 +275,10 @@ Installed during installation
 - [request](https://www.npmjs.com/package/request)
 - [moment](https://www.npmjs.com/package/moment)
 
+## Status
+Because it seems Jeff Clarke has abondoned MMM-MyCommute, no recent updates and not mering PR's, I've introduced this fork as an alternative. I have merged the interesting changes I've found in other forks and am willing to accept PR's for additional suggestions.
+
 ## Special Thanks
+- [Jeff Clarke](https://github.com/jclarke000) for creating MMM-MyCommute, this has inspired all my additional changes.
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
 - [Dominic Marx](https://github.com/domsen123) for creating the original mrx-work-traffic that this module heavily borrows upon.
-- [Chris van Marle](https://github.com/qistoph) for adding calendar based routes.
