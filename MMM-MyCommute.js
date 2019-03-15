@@ -194,7 +194,8 @@ Module.register('MMM-MyCommute', {
         this.appointmentDestinations.push.apply(this.appointmentDestinations,
           this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
             label: calevt.title,
-            destination: calevt.location
+            destination: calevt.location,
+            arrival_time: calevt.startDate
           }))
         );
       }
@@ -307,7 +308,11 @@ Module.register('MMM-MyCommute', {
 
     }
 
-    params += '&departure_time=now'; //needed for time based on traffic conditions
+    if (dest.arrival_time) {
+      params += '&arrival_time=' + dest.arrival_time;
+    } else {
+      params += '&departure_time=now'; //needed for time based on traffic conditions
+    }
 
     return params;
 
