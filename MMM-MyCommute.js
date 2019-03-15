@@ -204,8 +204,6 @@ Module.register('MMM-MyCommute', {
     // Make sure appointmentDestinations is not too long
     // Which could happend because of inner forEach on calendarOptions
     this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
-
-    this.getData();
   },
 
 
@@ -541,6 +539,7 @@ Module.register('MMM-MyCommute', {
       this.isHidden = true;
     } else if ( notification === 'CALENDAR_EVENTS' ) {
       this.setAppointmentDestinations(payload);
+      this.getData();
     }
   }
 
