@@ -131,11 +131,36 @@ Module.register('MMM-MyCommute', {
 
     //start data poll
     this.getData();
+    this.rescheduleInterval();
+  },
+
+  rescheduleInterval: function() {
     var self = this;
-    setInterval(function() {
+
+    if(this.interval !== null) {
+      // Clear current interval, just in case
+      clearInterval(this.interval);
+    }
+
+    this.interval = setInterval(function() {
       self.getData();
     }, this.config.pollFrequency);
-      
+  },
+
+  suspend: function() {
+    if(this.interval !== null) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+  },
+
+  resume: function() {
+    if(this.interval === null) {
+      // Start data refresh immediately
+      this.getData();
+      // Reschedule the refresh interval
+      this.rescheduleInterval();
+    }
   },
 
   /*
