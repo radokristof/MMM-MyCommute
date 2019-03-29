@@ -32,7 +32,7 @@ module.exports = function(grunt) {
 					config: {
 						"default": true,
 						"MD013": false, //"MD013": {"tables": false},
-						"MD033": false, //"MD033": {"allowed_elements": ["br"]}
+						"MD033": {"allowed_elements": ["br"]}
 					}
 				},
 				src: ["*.md"]

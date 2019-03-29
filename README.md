@@ -50,134 +50,39 @@ If you don’t want a header, then just omit it.
 
 ## Config
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Descriptio</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>apikey</code></td>
-      <td><strong>REQUIRED</strong> API Key from Google<br><br><strong>Type:</strong> <code>string</code></td>
-    </tr>
-    <tr>
-      <td><code>origin</code></td>
-      <td><strong>REQUIRED</strong> The starting point for your commute.  Usually this is your home address.<br><br><strong>Type:</strong> <code>string</code><br>This is as you would see it Google Maps.  Example:  <code>65 Front St W, Toronto, ON M5J 1E6</code></td>
-    </tr>
-    <tr>
-      <td><code>startTime</code></td>
-      <td>The start time of the window during which this module wil be visible.<br><br><strong>Type:</strong> <code>string</code><br>Must be in 24-hour time format.  Defaults to <code>00:00</code> (i.e.: midnight)</td>
-    </tr>
-    <tr>
-      <td><code>endTime</code></td>
-      <td>The end time of the window during which this module wil be visible.<br><br><strong>Type:</strong> <code>string</code><br>Must be in 24-hour time format.  Defaults to <code>23:59</code> (i.e.: one minute before midnight).</td>
-    </tr>
-    <tr>
-      <td><code>hideDays</code></td>
-      <td>A list of numbers representing days of the week to hide the module.<br><br><strong>Type:</strong> <code>array</code><br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: <code>[0,6]</code> hides the module on weekends.</td>
-    </tr>
-    <tr>
-      <td><code>showSummary</code></td>
-      <td>Whether to show a brief summary of the route<br><br><strong>Type:</strong> <code>boolean</code><br>Defaults to <code>true</code></td>
-    </tr>
-    <tr>
-      <td><code>colorCodeTravelTime</code></td>
-      <td>Whether to colour-code the travel time red, yellow, or green based on traffic.<br><br><strong>Type:</strong> <code>boolean</code><br>Defaults to <code>true</code></td>
-    </tr>
-    <tr>
-      <td><code>travelTimeFormat</code></td>
-      <td>How the module should format your total travel time.<br><br><strong>Type:</strong> <code>string</code><br>Defaults to <code>m [min]</code> (e.g. 86 min).  Some other examples are <code>h[h] m[m]</code> (e.g.: 1h 26min), <code>h:mm</code> (e.g. 1:26).  This uses the <code>moment-duration-format</code> plugin's templating feature.  https://github.com/jsmreese/moment-duration-format#template</td>
-    </tr>
-    <tr>
-      <td><code>travelTimeFormatTrim</code></td>
-      <td>How to handle time tokens that have no value.  For example, if you configure <code>travelTimeFormat</code> as <code>"hh:mm"</code> but the actual travel time is less than an hour, by default only the minute portion of the duration will be rendered.  Set <code>travelTimeFormatTrim</code> to <code>false</code> to preserve the <code>hh:</code> portion of the format (e.g.: <code>00:21</code>).  Valid options are <code>"left"</code>, <code>"right"</code> (e.g.: <code>2:00</code> renders as <code>2</code>), or <code>false</code> (e.g.: do not trim).<br><br><strong>Type:</strong> <code>String</code> or <code>false</code><br>Defaults to <code>"left"</code>.</td>
-    </tr>
-    <tr>
-      <td><code>moderateTimeThreshold</code></td>
-      <td>The amount of variance between time in traffic vs absolute fastest time after which the time is coloured yellow<br><br><strong>Type:</strong> <code>float</code><br>Defaults to <code>1.1</code> (i.e.: 10% longer than fastest time)</td>
-    </tr>
-    <tr>
-      <td><code>poorTimeThreshold</code></td>
-      <td>The amount of variance between time in traffic vs absolute fastest time after which the time is coloured red<br><br><strong>Type:</strong> <code>float</code><br>Defaults to <code>1.3</code> (i.e.: 30% longer than fastest time)</td>
-    </tr>
-    <tr>
-      <td><code>nextTransitVehicleDepartureFormat</code></td>
-      <td>For any transit destinations where <code>showNextVehicleDeparture</code> is true, this dictates how to format the next arrival time.<br><br><strong>Type:</strong> <code>string</code><br>Defaults to <code>[next at] h:mm a</code>.</td>
-    </tr>
-    <tr>
-      <td><code>pollFrequency</code></td>
-      <td>How frequently, in milliseconds, to poll for traffic predictions.<br><strong>BE CAREFUL WITH THIS!</strong>  We're using Google's free API which has a maximum of 2400 requests per day.  Each entry in the destinations list requires its own request so if you set this to be too frequent, it's pretty easy to blow your request quota.<br><br><strong>Type:</strong> <code>number</code>.<br>Defaults to <code>10 * 60 * 1000</code> (i.e.: 600000ms, or every 10 minutes)</td>
-    </tr>
-    <tr>
-      <td><code>destinations</code></td>
-      <td>An array of destinations to which you would like to see commute times.<br><br><strong>Type:</strong> <code>array</code> of objects.<br>See below for destination options.</td>
-    </tr>
-  </tbody>
-</table>
+Option                              | Description
+----------------------------------- | -----------
+`apikey`                            | **REQUIRED** API Key from Google<br><br>**Type:** `string`
+`origin`                            | **REQUIRED** The starting point for your commute. Usually this is your home address.<br><br>**Type:** `string`<br>This is as you would see it Google Maps. Example: `65 Front St W, Toronto, ON M5J 1E6`
+`startTime`                         | The start time of the window during which this module wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `00:00` (i.e.: midnight)
+`endTime`                           | The end time of the window during which this module wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `23:59` (i.e.: one minute before midnight).
+`hideDays`                          | A list of numbers representing days of the week to hide the module.<br><br>**Type:** `array`<br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: `[0,6]` hides the module on weekends.
+`showSummary`                       | Whether to show a brief summary of the route<br><br>**Type:** `boolean`<br>Defaults to `true`
+`colorCodeTravelTime`               | Whether to colour-code the travel time red, yellow, or green based on traffic.<br><br>**Type:** `boolean`<br>Defaults to `true`
+`travelTimeFormat`                  | How the module should format your total travel time.<br><br>**Type:** `string`<br>Defaults to `m [min]` (e.g. 86 min). Some other examples are `h[h] m[m]` (e.g.: 1h 26min), `h:mm` (e.g. 1:26). This uses the `moment-duration-format` plugin's [templating feature](https://github.com/jsmreese/moment-duration-format#template).
+`travelTimeFormatTrim`              | How to handle time tokens that have no value. For example, if you configure `travelTimeFormat` as `"hh:mm"` but the actual travel time is less than an hour, by default only the minute portion of the duration will be rendered. Set `travelTimeFormatTrim` to `false` to preserve the `hh:` portion of the format (e.g.: `00:21`). Valid options are `"left"`, `"right"` (e.g.: `2:00` renders as `2`), or `false` (e.g.: do not trim).<br><br>**Type:** `String` or `false`<br>Defaults to `"left"`.
+`moderateTimeThreshold`             | The amount of variance between time in traffic vs absolute fastest time after which the time is coloured yellow<br><br>**Type:** `float`<br>Defaults to `1.1` (i.e.: 10% longer than fastest time)
+`poorTimeThreshold`                 | The amount of variance between time in traffic vs absolute fastest time after which the time is coloured red<br><br>**Type:** `float`<br>Defaults to `1.3` (i.e.: 30% longer than fastest time)
+`nextTransitVehicleDepartureFormat` | For any transit destinations where `showNextVehicleDeparture` is true, this dictates how to format the next arrival time.<br><br>**Type:** `string`<br>Defaults to `[next at] h:mm a`.
+`pollFrequency`                     | How frequently, in milliseconds, to poll for traffic predictions.<br>**BE CAREFUL WITH THIS!** We're using Google's free API which has a maximum of 2400 requests per day. Each entry in the destinations list requires its own request so if you set this to be too frequent, it's pretty easy to blow your request quota.<br><br>**Type:** `number`.<br>Defaults to `10 * 60 * 1000` (i.e.: 600000ms, or every 10 minutes)
+`destinations`                     | An array of destinations to which you would like to see commute times.<br><br>**Type:** `array` of objects.<br>See below for destination options.
 
 Each object in the `destinations` array can have the following parameters:
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>destination</code></td>
-      <td><strong>REQUIRED</strong> The address of the destination<br><br><strong>Type:</strong> <code>string</code></td>
-    </tr>
-    <tr>
-      <td><code>label</code></td>
-      <td><strong>REQUIRED</strong> How you would like this displayed on your MagicMirror.<br><br><strong>Type:</strong> <code>string</code></td>
-    </tr>
-    <tr>
-      <td><code>mode</code></td>
-      <td>Transportation mode, one of the following: <code>driving</code>, <code>walking</code>, <code>bicycling</code>, <code>transit</code>.<br><br><strong>Type:</strong> <code>string</code><br>Defaults to <code>driving</code>.</td>
-    </tr>
-    <tr>
-      <td><code>transitMode</code></td>
-      <td>If <code>mode</code> = <code>transit</code> you can additionally specify one or more of the following: <code>bus</code>, <code>subway</code>, <code>train</code>, <code>tram</code>, or <code>rail</code>.<br><br><strong>Type:</strong> <code>string</code>.<br>Separate multiple entries with the <code>|</code> character (e.g.: <code>"transitMode" : "bus|subway|tram"</code>). Specifying <code>rail</code>indicates that the calculated route should prefer travel by train, tram, light rail, and subway.  Equivalenet to <code>train|tram|subway</code></td>
-    </tr>
-    <tr>
-      <td><code>showNextVehicleDeparture</code></td>
-      <td>If <code>mode</code> = <code>transit</code> the time of the next departure of the first vehicle on your route will be displayed in the route summary.  Only visible when <code>showSummary = true</code>.<br><br><strong>Type:</strong> <code>boolean</code>.</td>
-    </tr>
-    <tr>
-      <td><code>waypoints</code></td>
-      <td>If specified, it instructs Google to find the route that passes through the waypoints you specify.<br><br><strong>Type:</strong> <code>string</code>.<br>Separate multiple entries with the <code>|</code> character.  See https://developers.google.com/maps/documentation/directions/intro#Waypoints for details on how waypoints can be specified.<br><strong>NOTE:</strong> your waypoints will automatically be prefixed with <code>via:</code> so that they are not treated as stopovers.  This can cause Google to plan an erratic route.  if you find your time predictions are wildly overestimated, then try adjusting your waypoints.  Intersections where you would normally make a turn on this roite usually work well (e.g.: <code>Main St & Southwood Drive Toronto ON</code>).</td>
-    </tr>
-    <tr>
-      <td><code>avoid</code></td>
-      <td>If specified, will instruct the Google API to find a route that avoids one or more of the following: <code>tolls</code>,<code>highways</code>,<code>ferries</code>,<code>indoor</code>.<br><br><strong>Type:</strong> <code>string</code>.<br>Separate multiple entries with the <code>|</code> character (e.g.: <code>"avoid" : "highways|tolls"</code>).</td>
-    </tr>
-    <tr>
-      <td><code>alternatives</code></td>
-      <td>If specified, will instruct the Google API to provide times for alternate routes.  Must be used with <code>showSummary: true</code><br><br><strong>Type:</strong> <code>boolean</code></td>
-    </tr>
-    <tr>
-      <td><code>color</code></td>
-      <td>If specified, the colour for the icon in hexadecimal format (e.g.: <code>"#82BAE5"</code>)<br><br><strong>Type:</strong> <code>string</code><br>Defaults to white.</td>
-    </tr>
-    <tr>
-      <td><code>startTime</code></td>
-      <td>The start time of the window during which this destination wil be visible.<br><br><strong>Type:</strong> <code>string</code><br>Must be in 24-hour time format.  Defaults to <code>00:00</code> (i.e.: midnight)</td>
-    </tr>
-    <tr>
-      <td><code>endTime</code></td>
-      <td>The end time of the window during which this destination wil be visible.<br><br><strong>Type:</strong> <code>string</code><br>Must be in 24-hour time format.  Defaults to <code>23:59</code> (i.e.: one minute before midnight).</td>
-    </tr>
-    <tr>
-      <td><code>hideDays</code></td>
-      <td>A list of numbers representing days of the week to hide the destination.<br><br><strong>Type:</strong> <code>array</code><br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: <code>[0,6]</code> hides the destination on weekends.</td>
-    </tr>
-
-  </tbody>
-</table>
+Option                       | Description
+---------------------------- | -----------
+`destination`                | **REQUIRED** The address of the destination<br><br>**Type:** `string`
+`label`                      | **REQUIRED** How you would like this displayed on your MagicMirror.<br><br>**Type:** `string`
+`mode`                       | Transportation mode, one of the following: `driving`, `walking`, `bicycling`, `transit`.<br><br>**Type:** `string`<br>Defaults to `driving`.
+`transitMode`                | If `mode` = `transit` you can additionally specify one or more of the following: `bus`, `subway`, `train`, `tram`, or `rail`.<br><br>**Type:** `string`.<br>Separate multiple entries with the `\|` character (e.g.: `"transitMode" : "bus\|subway\|tram"`). Specifying `rail`indicates that the calculated route should prefer travel by train, tram, light rail, and subway. Equivalenet to `train\|tram\|subway`
+`showNextVehicleDeparture`   | If `mode` = `transit` the time of the next departure of the first vehicle on your route will be displayed in the route summary. Only visible when `showSummary = true`.<br><br>**Type:** `boolean`.
+`waypoints`                  | If specified, it instructs Google to find the route that passes through the waypoints you specify.<br><br>**Type:** `string`.<br>Separate multiple entries with the `\|` character. See [Waypoints docs](https://developers.google.com/maps/documentation/directions/intro#Waypoints) for details on how waypoints can be specified.<br>**NOTE:** your waypoints will automatically be prefixed with `via:` so that they are not treated as stopovers. This can cause Google to plan an erratic route. if you find your time predictions are wildly overestimated, then try adjusting your waypoints. Intersections where you would normally make a turn on this roite usually work well (e.g.: `Main St & Southwood Drive Toronto ON`).
+`avoid`                      | If specified, will instruct the Google API to find a route that avoids one or more of the following: `tolls`,`highways`,`ferries`,`indoor`.<br><br>**Type:** `string`.<br>Separate multiple entries with the `\|` character (e.g.: `"avoid" : "highways\|tolls"`).
+`alternatives`               | If specified, will instruct the Google API to provide times for alternate routes. Must be used with `showSummary: true`<br><br>**Type:** `boolean`
+`color`                      | If specified, the colour for the icon in hexadecimal format (e.g.: `"#82BAE5"`)<br><br>**Type:** `string`<br>Defaults to white.
+`startTime`                  | The start time of the window during which this destination wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `00:00` (i.e.: midnight)
+`endTime`                    | The end time of the window during which this destination wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `23:59` (i.e.: one minute before midnight).
+`hideDays`                   | A list of numbers representing days of the week to hide the destination.<br><br>**Type:** `array`<br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: `[0,6]` hides the destination on weekends.
 
 Here is an example of an entry in `config.js`
 
@@ -222,28 +127,11 @@ Here is an example of an entry in `config.js`
 
 Additionally MMM-MyCommute can show travel times to upcoming events in the default calendar module. The config can be extended with the following options. Routes will be shown for events with a location.
 
-<table>
-  <thead>
-    <tr>
-      <th>Option</th>
-      <th>Descriptio</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>maxCalendarEvents</code></td>
-      <td>Number of routes to show.<br><br><strong>Type:</strong> <code>int</code><br>Defaults to <code>0</code></td>
-    </tr>
-    <tr>
-      <td><code>maxCalendarTime</code></td>
-      <td>Show routes only for appointments within this timeframe (in milliseconds).<br><br><strong>Type:</strong> <code>int</code><br>Defaults to <code>24 * 60 * 60 * 1000</code> (1 day)</td>
-    </tr>
-    <tr>
-      <td><code>calendarOptions</code></td>
-      <td>An array like the regular <code>destinations</code>. For each event all of these options are added as a route. All options from above can be used, except that <code>label</code> will be overwritten with the event subject and <code>destination</code> with the event location.<br><br><strong>Type:</strong> <code>array</code><br>Defaults to <code>[{mode: 'driving'}]</code></td>
-    </tr>
-  </tbody>
-</table>
+Option              | Description
+------------------- | -----------
+`maxCalendarEvents` | Number of routes to show.<br><br>**Type:** `int`<br>Defaults to `0`
+`maxCalendarTime`   | Show routes only for appointments within this timeframe (in milliseconds).<br><br>**Type:** `int`<br>Defaults to `24 * 60 * 60 * 1000` (1 day)
+`calendarOptions`   | An array like the regular `destinations`. For each event all of these options are added as a route. All options from above can be used, except that `label` will be overwritten with the event subject and `destination` with the event location.<br><br>**Type:** `array`<br>Defaults to `[{mode: 'driving'}]`
 
 Here is an example of an entry in `config.js` including calendar event routes
 
