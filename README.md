@@ -1,30 +1,29 @@
 # MMM-MyCommute
+
 This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree/develop).
 
 It shows your commute time using Google's Traffic API (requires an API Key from Google).
 
-It is a fork of jclarke0000's work
-https://github.com/jclarke0000/MMM-MyCommute/
+It is a fork of [jclarke0000's work](https://github.com/jclarke0000/MMM-MyCommute/)
 
 ![Screen Shot](/../screenshots/MMM-MyCommute-screenshot.png?raw=true "Screen Shot")
 
-# Installation
-1. Navigate into your MagicMirror `modules` folder and execute<br>
-`git clone https://github.com/qistoph/MMM-MyCommute.git`.
-2. Enter the `MMM-MyCommute` directory and execute `npm install`.
-3. Go to https://developers.google.com/maps/documentation/javascript/get-api-key and get an API key.
-4. Restart MagicMirror<br>
-e.g. `pm2 restart mm`
+## Installation
 
-# NOTE To those updating from previous verions
+1. Navigate into your MagicMirror `modules` folder and execute<br>`git clone https://github.com/qistoph/MMM-MyCommute.git`.
+2. Enter the `MMM-MyCommute` directory and execute `npm install`.
+3. Go to [Google Maps devtools](https://developers.google.com/maps/documentation/javascript/get-api-key) and get an API key.
+4. Restart MagicMirror<br>e.g. `pm2 restart mm`
+
+## NOTE To those updating from previous verions
 
 You now configure the header in the standard way instead using the `headerText` and `showHeader` parameters. So if your config looked like this before:
 
-```
+```JavaScript
     {
       module: 'MMM-MyCommute',
       position: 'top_left',
-      classes: 'default everyone', 
+      classes: 'default everyone',
       config: {
         showHeader: true,
         headerText: 'Traffic',
@@ -32,21 +31,25 @@ You now configure the header in the standard way instead using the `headerText` 
       }
     }
 ```
+
 change it to this:
-```
+
+```JavaScript
    {
       module: 'MMM-MyCommute',
       position: 'top_left',
       header: 'Traffic',
-      classes: 'default everyone', 
+      classes: 'default everyone',
       config: {
         ...
       }
     }
 ```
+
 If you don’t want a header, then just omit it.
 
-# Config
+## Config
+
 <table>
   <thead>
     <tr>
@@ -176,9 +179,9 @@ Each object in the `destinations` array can have the following parameters:
   </tbody>
 </table>
 
-
 Here is an example of an entry in `config.js`
-```
+
+```JavaScript
 {
   module: 'MMM-MyCommute',
   position: 'top_left',
@@ -216,6 +219,7 @@ Here is an example of an entry in `config.js`
 ```
 
 ## Routes for calendar events
+
 Additionally MMM-MyCommute can show travel times to upcoming events in the default calendar module. The config can be extended with the following options. Routes will be shown for events with a location.
 
 <table>
@@ -242,7 +246,8 @@ Additionally MMM-MyCommute can show travel times to upcoming events in the defau
 </table>
 
 Here is an example of an entry in `config.js` including calendar event routes
-```
+
+```JavaScript
 {
   module: 'MMM-MyCommute',
   position: 'top_left',
@@ -273,14 +278,18 @@ Here is an example of an entry in `config.js` including calendar event routes
 ```
 
 ## Dependencies
+
 Installed during installation
+
 - [request](https://www.npmjs.com/package/request)
 - [moment](https://www.npmjs.com/package/moment)
 
 ## Status
+
 Because it seems Jeff Clarke has abondoned MMM-MyCommute, no recent updates and not mering PR's, I've introduced this fork as an alternative. I have merged the interesting changes I've found in other forks and am willing to accept PR's for additional suggestions.
 
 ## Special Thanks
+
 - [Jeff Clarke](https://github.com/jclarke000) for creating MMM-MyCommute, this has inspired all my additional changes.
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
 - [Dominic Marx](https://github.com/domsen123) for creating the original mrx-work-traffic that this module heavily borrows upon.

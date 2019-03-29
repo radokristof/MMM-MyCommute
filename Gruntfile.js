@@ -31,8 +31,8 @@ module.exports = function(grunt) {
 				options: {
 					config: {
 						"default": true,
-						"MD013": {"tables": false},
-						"MD033": {"allowed_elements": ["br"]}
+						"MD013": false, //"MD013": {"tables": false},
+						"MD033": false, //"MD033": {"allowed_elements": ["br"]}
 					}
 				},
 				src: ["*.md"]
