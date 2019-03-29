@@ -87,9 +87,12 @@ module.exports = NodeHelper.create({
           }
 
         } else {
-          console.log( "Error getting traffic prediction: " + response.statusCode );
           prediction.error = true;
-
+		  if (response !== undefined) {
+			  console.log( "Error getting traffic prediction: " + response.statusCode );
+		  } else {
+			  console.log( "Error getting traffic prediction: " + error );
+		  }
         }
 
         predictions[index] = prediction;
