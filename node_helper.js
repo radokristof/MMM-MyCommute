@@ -8,14 +8,14 @@
 var NodeHelper = require("node_helper");
 var request = require("request");
 var moment = require("moment");
- 
+
 module.exports = NodeHelper.create({
 
 	start: function() {
 		console.log("====================== Starting node_helper for module [" + this.name + "]");
 	},
-	
-	
+
+
 	// subclass socketNotificationReceived
 	socketNotificationReceived: function(notification, payload){
 		if (notification === "GOOGLE_TRAFFIC_GET") {
@@ -98,7 +98,7 @@ module.exports = NodeHelper.create({
 				predictions[index] = prediction;
 				returned++;
 
-				if (returned == payload.destinations.length) {					
+				if (returned == payload.destinations.length) {
 					self.sendSocketNotification("GOOGLE_TRAFFIC_RESPONSE" + payload.instanceId, predictions);
 				}
 

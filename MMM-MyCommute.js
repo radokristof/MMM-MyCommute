@@ -1,7 +1,7 @@
 
 /*********************************
 
-	Magic Mirror Module: 
+	Magic Mirror Module:
 	MMM-MyCommute
 	By Jeff Clarke
 
@@ -10,7 +10,7 @@
 	https://github.com/domsen123/mrx-work-traffic
 
 	MIT Licensed
- 
+
 *********************************/
 
 /* global config, Module, Log, moment */
@@ -66,7 +66,7 @@ Module.register("MMM-MyCommute", {
 	getScripts: function() {
 		return ["moment.js", this.file("node_modules/moment-duration-format/lib/moment-duration-format.js")];
 	},
-	
+
 	// Define required styles.
 	getStyles: function () {
 		return ["MMM-MyCommute.css", "font-awesome.css"];
@@ -120,7 +120,7 @@ Module.register("MMM-MyCommute", {
 		"gondola_lift":		 "gondola",
 		"funicular":				"gondola",
 		"other":						"streetcar"
-	},	
+	},
 
 	start: function() {
 
@@ -269,7 +269,7 @@ Module.register("MMM-MyCommute", {
 			}
 			this.inWindow = true;
 
-			if (destinationGetInfo.length > 0) {				
+			if (destinationGetInfo.length > 0) {
 				this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
 			} else {
 				this.hide(1000, {lockString: this.identifier});
@@ -297,7 +297,7 @@ Module.register("MMM-MyCommute", {
 		var mode = "driving";
 		if (dest.mode && this.travelModes.indexOf(dest.mode) != -1) {
 			mode = dest.mode;
-		} 
+		}
 		params += "&mode=" + mode;
 
 		//transit mode if travelMode = "transit"
@@ -312,7 +312,7 @@ Module.register("MMM-MyCommute", {
 			if (sanitizedTransitModes.length > 0) {
 				params += "&transit_mode=" + sanitizedTransitModes;
 			}
-		} 
+		}
 
 		if (dest.waypoints) {
 			var waypoints = dest.waypoints.split("|");
@@ -320,7 +320,7 @@ Module.register("MMM-MyCommute", {
 				waypoints[i] = "via:" + encodeURIComponent(waypoints[i]);
 			}
 			params += "&waypoints=" + waypoints.join("|");
-		} 
+		}
 
 		//avoid
 		if (dest.avoid) {
@@ -336,7 +336,7 @@ Module.register("MMM-MyCommute", {
 			}
 
 		}
-		
+
 		if (dest.alternatives == true) {
 			params += "&alternatives=true";
 		}
@@ -349,7 +349,7 @@ Module.register("MMM-MyCommute", {
 
 		return params;
 
-	},	
+	},
 
 	svgIconFactory: function(glyph) {
 
@@ -358,7 +358,7 @@ Module.register("MMM-MyCommute", {
 		var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
 		use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "modules/MMM-MyCommute/icon_sprite.svg#" + glyph);
 		svg.appendChild(use);
-		
+
 		return(svg);
 	},
 
@@ -370,7 +370,7 @@ Module.register("MMM-MyCommute", {
 			timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, {trim: this.config.travelTimeFormatTrim});
 
 			var variance = timeInTraffic / time;
-			if (this.config.colorCodeTravelTime) {						
+			if (this.config.colorCodeTravelTime) {
 				if (variance > this.config.poorTimeThreshold) {
 					timeEl.classList.add("status-poor");
 				} else if (variance > this.config.moderateTimeThreshold) {
@@ -409,7 +409,7 @@ Module.register("MMM-MyCommute", {
 
 	buildTransitSummary: function(transitInfo, summaryContainer) {
 
-		for (var i = 0; i < transitInfo.length; i++) {		
+		for (var i = 0; i < transitInfo.length; i++) {
 
 			var transitLeg = document.createElement("span");
 			transitLeg.classList.add("transit-leg");
@@ -432,7 +432,7 @@ Module.register("MMM-MyCommute", {
 	getDom: function() {
 
 		var wrapper = document.createElement("div");
-		
+
 		if (this.loading) {
 			var loading = document.createElement("div");
 			loading.innerHTML = this.translate("LOADING");
@@ -488,7 +488,7 @@ Module.register("MMM-MyCommute", {
 					if (r.transitInfo) {
 
 						symbolIcon = this.getTransitIcon(p.config,r);
-						this.buildTransitSummary(r.transitInfo, singleSummary); 
+						this.buildTransitSummary(r.transitInfo, singleSummary);
 
 					} else {
 						singleSummary.innerHTML = r.summary;
@@ -514,7 +514,7 @@ Module.register("MMM-MyCommute", {
 
 					if (r.transitInfo) {
 						symbolIcon = this.getTransitIcon(p.config,r);
-						this.buildTransitSummary(r.transitInfo, multiSummary); 
+						this.buildTransitSummary(r.transitInfo, multiSummary);
 
 					} else {
 						multiSummary.innerHTML = r.summary;
@@ -522,7 +522,7 @@ Module.register("MMM-MyCommute", {
 					routeSummaryOuter.appendChild(multiSummary);
 					row.appendChild(routeSummaryOuter);
 
-				} 
+				}
 
 			}
 
@@ -535,7 +535,7 @@ Module.register("MMM-MyCommute", {
 
 		return wrapper;
 	},
-	
+
 	socketNotificationReceived: function(notification, payload) {
 		if ( notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier ) {
 
