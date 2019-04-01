@@ -98,28 +98,28 @@ Module.register("MMM-MyCommute", {
 
 	// Icons to use for each transportation mode
 	symbols: {
-		"driving":					"car",
-		"walking":					"walk",
-		"bicycling":				"bike",
-		"transit":					"streetcar",
-		"tram":						 "streetcar",
-		"bus":							"bus",
-		"subway":					 "subway",
-		"train":						"train",
-		"rail":						 "train",
-		"metro_rail":			 "subway",
-		"monorail":				 "train",
-		"heavy_rail":			 "train",
-		"commuter_train":	 "train",
+		"driving":          "car",
+		"walking":          "walk",
+		"bicycling":        "bike",
+		"transit":          "streetcar",
+		"tram":             "streetcar",
+		"bus":              "bus",
+		"subway":           "subway",
+		"train":            "train",
+		"rail":             "train",
+		"metro_rail":       "subway",
+		"monorail":         "train",
+		"heavy_rail":       "train",
+		"commuter_train":   "train",
 		"high_speed_train": "train",
-		"intercity_bus":		"bus",
-		"trolleybus":			 "streetcar",
-		"share_taxi":			 "taxi",
-		"ferry":						"boat",
-		"cable_car":				"gondola",
-		"gondola_lift":		 "gondola",
-		"funicular":				"gondola",
-		"other":						"streetcar"
+		"intercity_bus":    "bus",
+		"trolleybus":       "streetcar",
+		"share_taxi":       "taxi",
+		"ferry":            "boat",
+		"cable_car":        "gondola",
+		"gondola_lift":     "gondola",
+		"funicular":        "gondola",
+		"other":            "streetcar"
 	},
 
 	start: function() {
@@ -154,21 +154,11 @@ Module.register("MMM-MyCommute", {
 	suspend: function() {
 		Log.log(this.name + " suspended");
 		this.suspended = true;
-		if(this.interval !== null) {
-			clearInterval(this.interval);
-			this.interval = null;
-		}
 	},
 
 	resume: function() {
 		Log.log(this.name + " resumed");
 		this.suspended = false;
-		if(this.interval === null) {
-			// Start data refresh immediately
-			this.getData();
-			// Reschedule the refresh interval
-			this.rescheduleInterval();
-		}
 	},
 
 	/*
@@ -246,44 +236,44 @@ Module.register("MMM-MyCommute", {
 	},
 
 	getData: function() {
-		Log.log(this.name + " refreshing routes");
+		if ( !this.suspended ) {
+			Log.log(this.name + " refreshing routes");
 
-		//only poll if in window
-		if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
-			//build URLs
-			var destinationGetInfo = new Array();
-			var destinations = this.getDestinations();
-			for(var i = 0; i < destinations.length; i++) {
+			//only poll if in window
+			if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
+				//build URLs
+				var destinationGetInfo = new Array();
+				var destinations = this.getDestinations();
+				for(var i = 0; i < destinations.length; i++) {
 
-				var d = destinations[i];
+					var d = destinations[i];
 
-				var destStartTime = d.startTime || "00:00";
-				var destEndTime = d.endTime || "23:59";
-				var destHideDays = d.hideDays || [];
+					var destStartTime = d.startTime || "00:00";
+					var destEndTime = d.endTime || "23:59";
+					var destHideDays = d.hideDays || [];
 
-				if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
-					var url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
-					destinationGetInfo.push({ url:url, config: d});
+					if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
+						var url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
+						destinationGetInfo.push({ url:url, config: d});
+					}
+
+				}
+				this.inWindow = true;
+
+				if (destinationGetInfo.length > 0) {
+					this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
+				} else {
+					this.hide(1000, {lockString: this.identifier});
+					this.inWindow = false;
+					this.isHidden = true;
 				}
 
-			}
-			this.inWindow = true;
-
-			if (destinationGetInfo.length > 0) {
-				this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
 			} else {
 				this.hide(1000, {lockString: this.identifier});
 				this.inWindow = false;
 				this.isHidden = true;
 			}
-
-		} else {
-
-			this.hide(1000, {lockString: this.identifier});
-			this.inWindow = false;
-			this.isHidden = true;
 		}
-
 	},
 
 	getParams: function(dest) {
