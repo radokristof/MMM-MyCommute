@@ -236,43 +236,41 @@ Module.register("MMM-MyCommute", {
 	},
 
 	getData: function() {
-		if ( !this.suspended ) {
-			Log.log(this.name + " refreshing routes");
+		Log.log(this.name + " refreshing routes");
 
-			//only poll if in window
-			if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
-				//build URLs
-				var destinationGetInfo = new Array();
-				var destinations = this.getDestinations();
-				for(var i = 0; i < destinations.length; i++) {
+		//only poll if in window
+		if ( this.isInWindow( this.config.startTime, this.config.endTime, this.config.hideDays ) ) {
+			//build URLs
+			var destinationGetInfo = new Array();
+			var destinations = this.getDestinations();
+			for(var i = 0; i < destinations.length; i++) {
 
-					var d = destinations[i];
+				var d = destinations[i];
 
-					var destStartTime = d.startTime || "00:00";
-					var destEndTime = d.endTime || "23:59";
-					var destHideDays = d.hideDays || [];
+				var destStartTime = d.startTime || "00:00";
+				var destEndTime = d.endTime || "23:59";
+				var destHideDays = d.hideDays || [];
 
-					if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
-						var url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
-						destinationGetInfo.push({ url:url, config: d});
-					}
-
-				}
-				this.inWindow = true;
-
-				if (destinationGetInfo.length > 0) {
-					this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
-				} else {
-					this.hide(1000, {lockString: this.identifier});
-					this.inWindow = false;
-					this.isHidden = true;
+				if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
+					var url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
+					destinationGetInfo.push({ url:url, config: d});
 				}
 
+			}
+			this.inWindow = true;
+
+			if (destinationGetInfo.length > 0) {
+				this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
 			} else {
 				this.hide(1000, {lockString: this.identifier});
 				this.inWindow = false;
 				this.isHidden = true;
 			}
+
+		} else {
+			this.hide(1000, {lockString: this.identifier});
+			this.inWindow = false;
+			this.isHidden = true;
 		}
 	},
 
