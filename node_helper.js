@@ -49,8 +49,10 @@ module.exports = NodeHelper.create({
 					if (data.error_message) {
 						console.log("MMM-MyCommute: " + data.error_message);
 						prediction.error = true;
+					} else if (data.status !== "OK") {
+						console.log("MMM-MyCommute: " + data.status);
+						prediction.error = true;
 					} else {
-
 						var routeList = new Array();
 						for (var i = 0; i < data.routes.length; i++) {
 							var r = data.routes[i];
