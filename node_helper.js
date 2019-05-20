@@ -79,7 +79,13 @@ module.exports = NodeHelper.create({
 										}
 										transitInfo.push({routeLabel: s.transit_details.line.short_name ? s.transit_details.line.short_name : s.transit_details.line.name, vehicle: s.transit_details.line.vehicle.type, arrivalTime: arrivalTime});
 									}
-									routeObj.transitInfo = transitInfo;
+								}
+
+								routeObj.transitInfo = transitInfo;
+								if (transitInfo.length <= 0) {
+									var travelModes = r.legs[0].steps.map(s => s.travel_mode).join(", ");
+									console.log("MMM-MyCommute: transit directrions does not contain any transits (" + travelModes + ")");
+									prediction.error = true;
 								}
 							}
 							routeList.push(routeObj);
