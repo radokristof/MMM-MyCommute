@@ -154,11 +154,14 @@ Module.register("MMM-MyCommute", {
 	suspend: function() {
 		Log.log(this.name + " suspended");
 		this.suspended = true;
+		clearInterval(this.interval);
 	},
 
 	resume: function() {
 		Log.log(this.name + " resumed");
 		this.suspended = false;
+		this.getData();
+		this.rescheduleInterval();
 	},
 
 	/*
@@ -555,9 +558,6 @@ Module.register("MMM-MyCommute", {
 			this.isHidden = true;
 		} else if ( notification === "CALENDAR_EVENTS" ) {
 			this.setAppointmentDestinations(payload);
-			if ( !this.suspended ) {
-				this.getData();
-			}
 		}
 	}
 
