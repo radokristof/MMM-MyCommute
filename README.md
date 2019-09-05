@@ -2,7 +2,7 @@
 
 This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree/develop).
 
-It shows your commute time using Google's Traffic API (requires an API Key from Google).
+It shows your commute time using Google's Directions API (requires an API Key from Google).
 
 It is a fork of [jclarke0000's work](https://github.com/jclarke0000/MMM-MyCommute/)
 
@@ -13,7 +13,9 @@ It is a fork of [jclarke0000's work](https://github.com/jclarke0000/MMM-MyCommut
 1. Navigate into your MagicMirror `modules` folder and execute<br>`git clone https://github.com/qistoph/MMM-MyCommute.git`.
 2. Enter the `MMM-MyCommute` directory and execute `npm install`.
 3. Go to [Google Maps devtools](https://developers.google.com/maps/documentation/javascript/get-api-key) and get an API key.
-4. Restart MagicMirror<br>e.g. `pm2 restart mm`
+4. Enable [Directions API](https://console.cloud.google.com/marketplace/details/google/directions-backend.googleapis.com).
+5. **NOTE:** After the free period you might need to [enable billing](https://console.cloud.google.com/project/_/billing/enable).
+6. Restart MagicMirror<br>e.g. `pm2 restart mm`
 
 ## NOTE To those updating from previous verions
 
