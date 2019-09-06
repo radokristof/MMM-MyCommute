@@ -524,6 +524,13 @@ Module.register("MMM-MyCommute", {
 			wrapper.appendChild(row);
 		}
 
+		var updatedRow = document.createElement("div");
+		updatedRow.classList.add("row");
+		updatedRow.classList.add("light");
+		updatedRow.classList.add("xsmall");
+		updatedRow.innerHTML = "Last update: "+this.lastUpdated.format("HH:mm");
+		wrapper.appendChild(updatedRow);
+
 		return wrapper;
 	},
 
@@ -531,6 +538,7 @@ Module.register("MMM-MyCommute", {
 		if ( notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier ) {
 
 			this.predictions = payload;
+			this.lastUpdated = moment();
 
 			if (this.loading) {
 				this.loading = false;

@@ -19,8 +19,6 @@ module.exports = NodeHelper.create({
 	// subclass socketNotificationReceived
 	socketNotificationReceived: function(notification, payload){
 		if (notification === "GOOGLE_TRAFFIC_GET") {
-			console.log("MMM-MyCommute socketNotificationReceived: ", notification);
-
 			//first data opull after new config
 			this.getPredictions(payload);
 
