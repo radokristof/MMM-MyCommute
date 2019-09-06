@@ -25,6 +25,7 @@ Module.register("MMM-MyCommute", {
 		lang: config.language,
 		hideDays: [],
 		showSummary: true,
+		showUpdated: true,
 		colorCodeTravelTime: true,
 		moderateTimeThreshold: 1.1,
 		poorTimeThreshold: 1.3,
@@ -524,12 +525,14 @@ Module.register("MMM-MyCommute", {
 			wrapper.appendChild(row);
 		}
 
-		var updatedRow = document.createElement("div");
-		updatedRow.classList.add("row");
-		updatedRow.classList.add("light");
-		updatedRow.classList.add("xsmall");
-		updatedRow.innerHTML = "Last update: "+this.lastUpdated.format("HH:mm");
-		wrapper.appendChild(updatedRow);
+		if(this.config.showUpdated) {
+			var updatedRow = document.createElement("div");
+			updatedRow.classList.add("row");
+			updatedRow.classList.add("light");
+			updatedRow.classList.add("xsmall");
+			updatedRow.innerHTML = "Last update: "+this.lastUpdated.format("HH:mm");
+			wrapper.appendChild(updatedRow);
+		}
 
 		return wrapper;
 	},
