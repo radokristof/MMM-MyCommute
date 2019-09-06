@@ -154,15 +154,19 @@ Module.register("MMM-MyCommute", {
 
 	suspend: function() {
 		Log.log(this.name + " suspended");
-		this.suspended = true;
-		clearInterval(this.interval);
+		if(!this.suspended) {
+			this.suspended = true;
+			clearInterval(this.interval);
+		}
 	},
 
 	resume: function() {
 		Log.log(this.name + " resumed");
-		this.suspended = false;
-		this.getData();
-		this.rescheduleInterval();
+		if(this.suspended) {
+			this.suspended = false;
+			this.getData();
+			this.rescheduleInterval();
+		}
 	},
 
 	/*
