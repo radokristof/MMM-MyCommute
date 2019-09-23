@@ -100,6 +100,7 @@ Option                       | Description
 `startTime`                  | The start time of the window during which this destination wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `00:00` (i.e.: midnight)
 `endTime`                    | The end time of the window during which this destination wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `23:59` (i.e.: one minute before midnight).
 `hideDays`                   | A list of numbers representing days of the week to hide the destination.<br><br>**Type:** `array`<br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: `[0,6]` hides the destination on weekends.
+`origin`                     | Optionally overide the global origin for a single destination.
 
 Here is an example of an entry in `config.js`
 
