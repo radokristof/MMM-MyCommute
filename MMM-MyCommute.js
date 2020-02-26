@@ -531,10 +531,10 @@ Module.register("MMM-MyCommute", {
 
 		if(this.config.showUpdated) {
 			var updatedRow = document.createElement("div");
-			updatedRow.classList.add("row");
+			//updatedRow.classList.add("row");
 			updatedRow.classList.add("light");
 			updatedRow.classList.add("xsmall");
-			updatedRow.innerHTML = "Last update: "+this.lastUpdated.format("HH:mm");
+			updatedRow.innerHTML = "Utoljára frissítve: "+this.lastUpdated.format("HH:mm");
 			wrapper.appendChild(updatedRow);
 		}
 
