@@ -6,7 +6,7 @@ It shows your commute time using Google's Directions API (requires an API Key fr
 
 It is a fork of [jclarke0000's work](https://github.com/jclarke0000/MMM-MyCommute/)
 
-![Screen Shot](/../screenshots/MMM-MyCommute-screenshot.png?raw=true "Screen Shot")
+![Screenshot](/screenshots/MMM-MyCommute-screenshot.png?raw=true "Screenshot")
 
 ## Installation
 
@@ -189,10 +189,6 @@ Installed during installation
 
 - [request](https://www.npmjs.com/package/request)
 - [moment](https://www.npmjs.com/package/moment)
-
-## Status
-
-Because it seems Jeff Clarke has abondoned MMM-MyCommute, no recent updates and not mering PR's, I've introduced this fork as an alternative. I have merged the interesting changes I've found in other forks and am willing to accept PR's for additional suggestions.
 
 ## Special Thanks
 
