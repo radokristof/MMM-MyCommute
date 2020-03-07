@@ -18,7 +18,7 @@
 Module.register("MMM-MyCommute", {
 
 	defaults: {
-		apikey: "",
+		apiKey: "",
 		origin: "65 Front St W, Toronto, ON M5J 1E6",
 		lang: config.language,
 		showSummary: true,
@@ -268,7 +268,7 @@ Module.register("MMM-MyCommute", {
 		let params = "?";
 		params += "origin=" + encodeURIComponent(dest.origin || this.config.origin);
 		params += "&destination=" + encodeURIComponent(dest.destination);
-		params += "&key=" + this.config.apikey;
+		params += "&key=" + this.config.apiKey;
 		params += "&language=" + this.config.lang;
 
 		// travel mode
@@ -500,7 +500,7 @@ Module.register("MMM-MyCommute", {
 	},
 
 	socketNotificationReceived: function(notification, payload) {
-		if ( notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier) {
+		if (notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier) {
 			this.predictions = payload;
 			this.lastUpdated = moment();
 			if (this.loading) {
