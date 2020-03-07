@@ -500,21 +500,21 @@ Module.register("MMM-MyCommute", {
 	},
 
 	socketNotificationReceived: function(notification, payload) {
-		if ( notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier ) {
+		if ( notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier) {
 			this.predictions = payload;
 			this.lastUpdated = moment();
 			if (this.loading) {
 				this.loading = false;
 				if (this.isHidden) {
 					this.updateDom();
-					this.show(1000, {lockString: this.identifier});
+					this.show(1000, { lockString: this.identifier });
 				} else {
 					this.updateDom(1000);
 				}
 			} else {
 				this.updateDom();
 				if ( this.hidden ) {
-					this.show(1000, {lockString: this.identifier});
+					this.show(1000, { lockString: this.identifier });
 				}
 			}
 			this.isHidden = false;
@@ -522,10 +522,10 @@ Module.register("MMM-MyCommute", {
 	},
 
 	notificationReceived: function(notification, payload) {
-		if ( notification === "DOM_OBJECTS_CREATED" && !this.inWindow) {
-			this.hide(0, {lockString: this.identifier});
+		if (notification === "DOM_OBJECTS_CREATED" && !this.inWindow) {
+			this.hide(0, { lockString: this.identifier });
 			this.isHidden = true;
-		} else if ( notification === "CALENDAR_EVENTS" ) {
+		} else if (notification === "CALENDAR_EVENTS") {
 			this.setAppointmentDestinations(payload);
 		}
 	}
