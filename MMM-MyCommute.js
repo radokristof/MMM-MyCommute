@@ -20,10 +20,7 @@ Module.register("MMM-MyCommute", {
 	defaults: {
 		apikey: "",
 		origin: "65 Front St W, Toronto, ON M5J 1E6",
-		startTime: "00:00",
-		endTime: "23:59",
 		lang: config.language,
-		hideDays: [],
 		showSummary: true,
 		showUpdated: true,
 		colorCodeTravelTime: true,
@@ -137,7 +134,7 @@ Module.register("MMM-MyCommute", {
 		this.inWindow = true;
 		this.isHidden = false;
 
-		//start data poll
+		// start data poll
 		this.getData();
 		this.rescheduleInterval();
 	},
@@ -199,12 +196,8 @@ Module.register("MMM-MyCommute", {
 		const startTime = moment().hour(startTimeSplit[0]).minute(startTimeSplit[1]);
 		const endTime = moment().hour(endTimeSplit[0]).minute(endTimeSplit[1]);
 
-		if (now.isBefore(startTime) || now.isAfter(endTime)) {
-			return false;
-		} else if ( hideDays.indexOf( now.day() ) !== -1) {
-			return false;
-		}
-		return true;
+		return !(now.isBefore(startTime) || now.isAfter(endTime) || hideDays.indexOf(now.day()) !== -1);
+
 	},
 
 	appointmentDestinations: [],
@@ -213,8 +206,6 @@ Module.register("MMM-MyCommute", {
 		this.appointmentDestinations = [];
 
 		if ( this.config.calendarOptions.length === 0) {
-			// No routing configs for calendar events
-			// Skip looking those up then
 			return;
 		}
 
@@ -247,32 +238,24 @@ Module.register("MMM-MyCommute", {
 	getData: function() {
 		Log.log(this.name + " refreshing routes");
 
-		//only poll if in window
-		if (this.isInWindow(this.config.startTime, this.config.endTime, this.config.hideDays)) {
-			//build URLs
-			let destinationGetInfo = [];
-			const destinations = this.getDestinations();
-			for(let i = 0; i < destinations.length; i++) {
-				const d = destinations[i];
+		let destinationGetInfo = [];
+		const destinations = this.getDestinations();
+		for(let i = 0; i < destinations.length; i++) {
+			const d = destinations[i];
 
-				const destStartTime = d.startTime || "00:00";
-				const destEndTime = d.endTime || "23:59";
-				const destHideDays = d.hideDays || [];
+			const destStartTime = d.startTime || "00:00";
+			const destEndTime = d.endTime || "23:59";
+			const destHideDays = d.hideDays || [];
 
-				if (this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-					const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
-					destinationGetInfo.push({ url:url, config: d});
-				}
+			if (this.isInWindow(destStartTime, destEndTime, destHideDays)) {
+				const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
+				destinationGetInfo.push({ url:url, config: d});
+				this.inWindow = true;
 			}
-			this.inWindow = true;
+		}
 
-			if (destinationGetInfo.length > 0) {
-				this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
-			} else {
-				this.hide(1000, {lockString: this.identifier});
-				this.inWindow = false;
-				this.isHidden = true;
-			}
+		if (destinationGetInfo.length > 0) {
+			this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
 		} else {
 			this.hide(1000, {lockString: this.identifier});
 			this.inWindow = false;
@@ -288,14 +271,14 @@ Module.register("MMM-MyCommute", {
 		params += "&key=" + this.config.apikey;
 		params += "&language=" + this.config.lang;
 
-		//travel mode
+		// travel mode
 		let mode = "driving";
 		if (dest.mode && this.travelModes.indexOf(dest.mode) !== -1) {
 			mode = dest.mode;
 		}
 		params += "&mode=" + mode;
 
-		//transit mode if travelMode = "transit"
+		// transit mode if travelMode = "transit"
 		if (mode === "transit" && dest.transitMode) {
 			const tModes = dest.transitMode.split("|");
 			let sanitizedTransitModes = "";
@@ -317,7 +300,7 @@ Module.register("MMM-MyCommute", {
 			params += "&waypoints=" + waypoints.join("|");
 		}
 
-		//avoid
+		// avoid
 		if (dest.avoid) {
 			const a = dest.avoid.split("|");
 			let sanitizedAvoidOptions = "";
@@ -453,7 +436,7 @@ Module.register("MMM-MyCommute", {
 				symbolIcon = this.symbols[p.config.mode];
 			}
 
-			//different rendering for single route vs multiple
+			// different rendering for single route vs multiple
 			if (p.error) {
 				//no routes available.	display an error instead.
 				const errorTxt = document.createElement("span");

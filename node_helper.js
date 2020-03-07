@@ -27,11 +27,10 @@ module.exports = NodeHelper.create({
 		let returned = 0;
 		const predictions = [];
 		payload.destinations.forEach(function (dest, index) {
-			request({url: dest.url, method: "GET"}, function (error, response, body) {
+			request({ url: dest.url, method: "GET" }, function (error, response, body) {
 				const prediction = new Object({
 					config: dest.config
 				});
-
 				if (!error && response.statusCode === 200) {
 					const data = JSON.parse(body);
 					if (data.error_message) {
