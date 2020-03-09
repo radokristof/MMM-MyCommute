@@ -70,9 +70,6 @@ Option                              | Description
 ----------------------------------- | -----------
 `apiKey`                            | **REQUIRED** API Key from Google<br><br>**Type:** `string`
 `origin`                            | **REQUIRED** The starting point for your commute. Usually this is your home address.<br><br>**Type:** `string`<br>This is as you would see it Google Maps. Example: `65 Front St W, Toronto, ON M5J 1E6`
-`startTime`                         | The start time of the window during which this module wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `00:00` (i.e.: midnight)
-`endTime`                           | The end time of the window during which this module wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `23:59` (i.e.: one minute before midnight).
-`hideDays`                          | A list of numbers representing days of the week to hide the module.<br><br>**Type:** `array`<br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: `[0,6]` hides the module on weekends.
 `showSummary`                       | Whether to show a brief summary of the route<br><br>**Type:** `boolean`<br>Defaults to `true`
 `showUpdated`                       | Show when the last update completed<br><br>**Type:** `boolean`<br>Default to `true`
 `colorCodeTravelTime`               | Whether to colour-code the travel time red, yellow, or green based on traffic.<br><br>**Type:** `boolean`<br>Defaults to `true`
@@ -81,6 +78,7 @@ Option                              | Description
 `moderateTimeThreshold`             | The amount of variance between time in traffic vs absolute fastest time after which the time is coloured yellow<br><br>**Type:** `float`<br>Defaults to `1.1` (i.e.: 10% longer than fastest time)
 `poorTimeThreshold`                 | The amount of variance between time in traffic vs absolute fastest time after which the time is coloured red<br><br>**Type:** `float`<br>Defaults to `1.3` (i.e.: 30% longer than fastest time)
 `nextTransitVehicleDepartureFormat` | For any transit destinations where `showNextVehicleDeparture` is true, this dictates how to format the next arrival time.<br><br>**Type:** `string`<br>Defaults to `[next at] h:mm a`.
+`showArrivalTime`                   | Shows arrival time for every destination if leaving now<br><br>**Type:** `boolean`<br>Defaults to `true`.
 `pollFrequency`                     | How frequently, in milliseconds, to poll for traffic predictions.<br>**BE CAREFUL WITH THIS!** We're using Google's free API which has a maximum of 2400 requests per day. Each entry in the destinations list requires its own request so if you set this to be too frequent, it's pretty easy to blow your request quota.<br><br>**Type:** `number`.<br>Defaults to `10 * 60 * 1000` (i.e.: 600000ms, or every 10 minutes)
 `destinations`                     | An array of destinations to which you would like to see commute times.<br><br>**Type:** `array` of objects.<br>See below for destination options.
 
