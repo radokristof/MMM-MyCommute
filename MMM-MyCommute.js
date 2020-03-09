@@ -16,7 +16,6 @@
 /* global config, Module, Log, moment */
 
 Module.register("MMM-MyCommute", {
-
 	defaults: {
 		apiKey: "",
 		origin: "65 Front St W, Toronto, ON M5J 1E6",
@@ -32,31 +31,18 @@ Module.register("MMM-MyCommute", {
 		pollFrequency: 10 * 60 * 1000, //every ten minutes, in milliseconds
 		maxCalendarEvents: 0,
 		maxCalendarTime: 24 * 60 * 60 * 1000,
-		calendarOptions: [{mode: "driving"}],
+		calendarOptions: [ { mode: "driving" } ],
 		showArrivalTime: true,
 		destinations: [
 			{
 				destination: "40 Bay St, Toronto, ON M5J 2X2",
 				label: "Air Canada Centre",
 				mode: "walking",
-				time: null
 			},
 			{
 				destination: "317 Dundas St W, Toronto, ON M5T 1G4",
 				label: "Art Gallery of Ontario",
 				mode: "transit",
-				time: null
-			},
-			{
-				destination: "55 Mill St, Toronto, ON M5A 3C4",
-				label: "Distillery",
-				mode: "bicycling",
-				time: null
-			},
-			{
-				destination: "6301 Silver Dart Dr, Mississauga, ON L5P 1B2",
-				label: "Pearson Airport",
-				time: null
 			}
 		]
 	},
@@ -68,14 +54,12 @@ Module.register("MMM-MyCommute", {
 		};
 	},
 
-	// Define required scripts.
 	getScripts: function() {
-		return ["moment.js", this.file("node_modules/moment-duration-format/lib/moment-duration-format.js")];
+		return [ "moment.js", this.file("node_modules/moment-duration-format/lib/moment-duration-format.js") ];
 	},
 
-	// Define required styles.
 	getStyles: function () {
-		return ["MMM-MyCommute.css", "font-awesome.css"];
+		return [ "MMM-MyCommute.css", "font-awesome.css" ];
 	},
 
 	travelModes: [
@@ -205,11 +189,11 @@ Module.register("MMM-MyCommute", {
 	setAppointmentDestinations: function(payload) {
 		this.appointmentDestinations = [];
 
-		if ( this.config.calendarOptions.length === 0) {
+		if (this.config.calendarOptions.length === 0) {
 			return;
 		}
 
-		for (let i=0; i<payload.length && this.appointmentDestinations.length<this.config.maxCalendarEvents; ++i) {
+		for (let i=0; i < payload.length && this.appointmentDestinations.length < this.config.maxCalendarEvents; ++i) {
 			const calendarEvent = payload[i];
 			if ("location" in calendarEvent &&
 					calendarEvent.location !== undefined &&
@@ -241,23 +225,26 @@ Module.register("MMM-MyCommute", {
 		let destinationGetInfo = [];
 		const destinations = this.getDestinations();
 		for(let i = 0; i < destinations.length; i++) {
-			const d = destinations[i];
+			const destination = destinations[i];
 
-			const destStartTime = d.startTime || "00:00";
-			const destEndTime = d.endTime || "23:59";
-			const destHideDays = d.hideDays || [];
-
+			const destStartTime = destination.startTime || "00:00";
+			const destEndTime = destination.endTime || "23:59";
+			const destHideDays = destination.hideDays || [];
 			if (this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-				const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(d);
-				destinationGetInfo.push({ url:url, config: d});
+				Log.log(this.name + " destination {} is in window", destination);
+				const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
+				destinationGetInfo.push({ url:url, config: destination});
 				this.inWindow = true;
 			}
 		}
 
-		if (destinationGetInfo.length > 0) {
-			this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinationGetInfo, instanceId: this.identifier});
-		} else {
-			this.hide(1000, {lockString: this.identifier});
+		if(destinationGetInfo.length > 0) {
+			this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
+			Log.log(this.name + " requesting data from Google API");
+		}
+		else {
+			Log.log(this.name + " no destination available in the timeframe");
+			this.hide(1000, { lockString: this.identifier });
 			this.inWindow = false;
 			this.isHidden = true;
 		}
@@ -273,13 +260,13 @@ Module.register("MMM-MyCommute", {
 
 		// travel mode
 		let mode = "driving";
-		if (dest.mode && this.travelModes.indexOf(dest.mode) !== -1) {
+		if(dest.mode && this.travelModes.indexOf(dest.mode) !== -1) {
 			mode = dest.mode;
 		}
 		params += "&mode=" + mode;
 
 		// transit mode if travelMode = "transit"
-		if (mode === "transit" && dest.transitMode) {
+		if(mode === "transit" && dest.transitMode) {
 			const tModes = dest.transitMode.split("|");
 			let sanitizedTransitModes = "";
 			for (let i = 0; i < tModes.length; i++) {
@@ -292,7 +279,7 @@ Module.register("MMM-MyCommute", {
 			}
 		}
 
-		if (dest.waypoints) {
+		if(dest.waypoints) {
 			const waypoints = dest.waypoints.split("|");
 			for (let i = 0; i < waypoints.length; i++) {
 				waypoints[i] = "via:" + encodeURIComponent(waypoints[i]);
@@ -301,7 +288,7 @@ Module.register("MMM-MyCommute", {
 		}
 
 		// avoid
-		if (dest.avoid) {
+		if(dest.avoid) {
 			const a = dest.avoid.split("|");
 			let sanitizedAvoidOptions = "";
 			for (let i = 0; i < a.length; i++) {
@@ -313,16 +300,16 @@ Module.register("MMM-MyCommute", {
 				params += "&avoid=" + sanitizedAvoidOptions;
 			}
 		}
-		if (dest.alternatives === true) {
+		if(dest.alternatives === true) {
 			params += "&alternatives=true";
 		}
 
 		if (dest.arrival_time) {
 			params += "&arrival_time=" + dest.arrival_time;
-		} else {
+		}
+		else {
 			params += "&departure_time=now";	//needed for time based on traffic conditions
 		}
-
 		return params;
 
 	},
@@ -341,7 +328,7 @@ Module.register("MMM-MyCommute", {
 		const timeEl = document.createElement("span");
 		timeEl.classList.add("travel-time");
 		let now = moment();
-		if (timeInTraffic != null) {
+		if(timeInTraffic != null) {
 			if(this.config.showArrivalTime) {
 				timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, {trim: this.config.travelTimeFormatTrim}) + " - " + now.add(Number(timeInTraffic), "seconds").format("HH:mm");
 			}
@@ -349,16 +336,19 @@ Module.register("MMM-MyCommute", {
 				timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, {trim: this.config.travelTimeFormatTrim});
 			}
 			const variance = timeInTraffic / time;
-			if (this.config.colorCodeTravelTime) {
+			if(this.config.colorCodeTravelTime) {
 				if (variance > this.config.poorTimeThreshold) {
 					timeEl.classList.add("status-poor");
-				} else if (variance > this.config.moderateTimeThreshold) {
+				}
+				else if (variance > this.config.moderateTimeThreshold) {
 					timeEl.classList.add("status-moderate");
-				} else {
+				}
+				else {
 					timeEl.classList.add("status-good");
 				}
 			}
-		} else {
+		}
+		else {
 			if(this.config.showArrivalTime) {
 				timeEl.innerHTML = moment.duration(Number(time), "seconds").format(this.config.travelTimeFormat, {trim: this.config.travelTimeFormatTrim}) + " - " + now.add(Number(time), "seconds").format("HH:mm");
 			}
@@ -372,23 +362,24 @@ Module.register("MMM-MyCommute", {
 
 	getTransitIcon: function(dest, route) {
 		let transitIcon;
-		if (dest.transitMode) {
+		if(dest.transitMode) {
 			transitIcon = dest.transitMode.split("|")[0];
-			if (this.symbols[transitIcon] != null) {
+			if(this.symbols[transitIcon] != null) {
 				transitIcon = this.symbols[transitIcon];
-			} else {
+			}
+			else {
 				transitIcon = this.symbols[route.transitInfo[0].vehicle.toLowerCase()];
 			}
-		} else {
+		}
+		else {
 			transitIcon = this.symbols[route.transitInfo[0].vehicle.toLowerCase()];
 		}
-
 		return transitIcon;
 	},
 
 	buildTransitSummary: function(transitInfo, summaryContainer) {
 
-		for (let i = 0; i < transitInfo.length; i++) {
+		for(let i = 0; i < transitInfo.length; i++) {
 			const transitLeg = document.createElement("span");
 			transitLeg.classList.add("transit-leg");
 			transitLeg.appendChild(this.svgIconFactory(this.symbols[transitInfo[i].vehicle.toLowerCase()]));
@@ -396,7 +387,7 @@ Module.register("MMM-MyCommute", {
 			const routeNumber = document.createElement("span");
 			routeNumber.innerHTML = transitInfo[i].routeLabel;
 
-			if (transitInfo[i].arrivalTime) {
+			if(transitInfo[i].arrivalTime) {
 				routeNumber.innerHTML = routeNumber.innerHTML + " (" + moment(transitInfo[i].arrivalTime).format(this.config.nextTransitVehicleDepartureFormat) + ")";
 			}
 
@@ -407,7 +398,7 @@ Module.register("MMM-MyCommute", {
 
 	getDom: function() {
 		const wrapper = document.createElement("div");
-		if (this.loading) {
+		if(this.loading) {
 			const loading = document.createElement("div");
 			loading.innerHTML = this.translate("LOADING");
 			loading.className = "dimmed light small";
@@ -416,43 +407,44 @@ Module.register("MMM-MyCommute", {
 		}
 
 		const destinations = this.getDestinations();
-		for (let i = 0; i < this.predictions.length; i++) {
-			const p = this.predictions[i];
+		for(let i = 0; i < this.predictions.length; i++) {
+			const prediction = this.predictions[i];
 			const row = document.createElement("div");
 			row.classList.add("row");
 			const destination = document.createElement("span");
 			destination.className = "destination-label bright";
-			destination.innerHTML = p.config.label;
+			destination.innerHTML = prediction.config.label;
 			row.appendChild(destination);
 
 			const icon = document.createElement("span");
 			icon.className = "transit-mode bright";
 			let symbolIcon = "car";
 			if (destinations[i].color) {
-				icon.setAttribute("style", "color:" + p.config.color);
+				icon.setAttribute("style", "color:" + prediction.config.color);
 			}
 
-			if (p.config.mode && this.symbols[p.config.mode]) {
-				symbolIcon = this.symbols[p.config.mode];
+			if(prediction.config.mode && this.symbols[prediction.config.mode]) {
+				symbolIcon = this.symbols[prediction.config.mode];
 			}
 
 			// different rendering for single route vs multiple
-			if (p.error) {
+			if(prediction.error) {
 				//no routes available.	display an error instead.
 				const errorTxt = document.createElement("span");
 				errorTxt.classList.add("route-error");
 				errorTxt.innerHTML = "Error";
 				row.appendChild(errorTxt);
 
-			} else if (p.routes.length === 1 || !this.config.showSummary) {
-				let r = p.routes[0];
+			}
+			else if(prediction.routes.length === 1 || !this.config.showSummary) {
+				let r = prediction.routes[0];
 
-				//summary?
+				// summary
 				if (this.config.showSummary) {
 					var singleSummary = document.createElement("div");
 					singleSummary.classList.add("route-summary");
 					if (r.transitInfo) {
-						symbolIcon = this.getTransitIcon(p.config,r);
+						symbolIcon = this.getTransitIcon(prediction.config,r);
 						this.buildTransitSummary(r.transitInfo, singleSummary);
 					} else {
 						singleSummary.innerHTML = r.summary;
@@ -463,19 +455,21 @@ Module.register("MMM-MyCommute", {
 				else {
 					row.appendChild(this.formatTime(r.time, r.timeInTraffic));
 				}
-			} else {
+			}
+			else {
 				row.classList.add("with-multiple-routes");
-				for (let j = 0; j < p.routes.length; j++) {
+				for(let j = 0; j < prediction.routes.length; j++) {
 					const routeSummaryOuter = document.createElement("div");
 					routeSummaryOuter.classList.add("route-summary-outer");
-					let r = p.routes[j];
+					let r = prediction.routes[j];
 
 					var multiSummary = document.createElement("div");
 					multiSummary.classList.add("route-summary");
-					if (r.transitInfo) {
-						symbolIcon = this.getTransitIcon(p.config,r);
+					if(r.transitInfo) {
+						symbolIcon = this.getTransitIcon(prediction.config,r);
 						this.buildTransitSummary(r.transitInfo, multiSummary);
-					} else {
+					}
+					else {
 						multiSummary.innerHTML = r.summary;
 					}
 					routeSummaryOuter.appendChild(multiSummary);
@@ -500,20 +494,22 @@ Module.register("MMM-MyCommute", {
 	},
 
 	socketNotificationReceived: function(notification, payload) {
-		if (notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier) {
+		if(notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier) {
 			this.predictions = payload;
 			this.lastUpdated = moment();
-			if (this.loading) {
+			if(this.loading) {
 				this.loading = false;
 				if (this.isHidden) {
 					this.updateDom();
 					this.show(1000, { lockString: this.identifier });
-				} else {
+				}
+				else {
 					this.updateDom(1000);
 				}
-			} else {
+			}
+			else {
 				this.updateDom();
-				if ( this.hidden ) {
+				if (this.hidden) {
 					this.show(1000, { lockString: this.identifier });
 				}
 			}
@@ -522,10 +518,11 @@ Module.register("MMM-MyCommute", {
 	},
 
 	notificationReceived: function(notification, payload) {
-		if (notification === "DOM_OBJECTS_CREATED" && !this.inWindow) {
+		if(notification === "DOM_OBJECTS_CREATED" && !this.inWindow) {
 			this.hide(0, { lockString: this.identifier });
 			this.isHidden = true;
-		} else if (notification === "CALENDAR_EVENTS") {
+		}
+		else if (notification === "CALENDAR_EVENTS") {
 			this.setAppointmentDestinations(payload);
 		}
 	}
