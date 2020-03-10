@@ -189,13 +189,13 @@ Module.register("MMM-MyCommute", {
 	setAppointmentDestinations: function(payload) {
 		this.appointmentDestinations = [];
 
-		if (this.config.calendarOptions.length === 0) {
+		if(this.config.calendarOptions.length === 0) {
 			return;
 		}
 
-		for (let i=0; i < payload.length && this.appointmentDestinations.length < this.config.maxCalendarEvents; ++i) {
+		for (let i = 0; i < payload.length && this.appointmentDestinations.length < this.config.maxCalendarEvents; ++i) {
 			const calendarEvent = payload[i];
-			if ("location" in calendarEvent &&
+			if("location" in calendarEvent &&
 					calendarEvent.location !== undefined &&
 					calendarEvent.location !== false &&
 					calendarEvent.startDate < (Date.now() + this.config.maxCalendarTime)
@@ -234,13 +234,14 @@ Module.register("MMM-MyCommute", {
 				Log.log(this.name + " destination {} is in window", destination);
 				const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
 				destinationGetInfo.push({ url:url, config: destination});
-				this.inWindow = true;
 			}
 		}
 
 		if(destinationGetInfo.length > 0) {
 			this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
 			Log.log(this.name + " requesting data from Google API");
+			this.inWindow = true;
+			this.isHidden = false;
 		}
 		else {
 			Log.log(this.name + " no destination available in the timeframe");
@@ -269,7 +270,7 @@ Module.register("MMM-MyCommute", {
 		if(mode === "transit" && dest.transitMode) {
 			const tModes = dest.transitMode.split("|");
 			let sanitizedTransitModes = "";
-			for (let i = 0; i < tModes.length; i++) {
+			for(let i = 0; i < tModes.length; i++) {
 				if (this.transitModes.indexOf(tModes[i]) !== -1) {
 					sanitizedTransitModes += (sanitizedTransitModes === "" ? tModes[i] : "|" + tModes[i]);
 				}
@@ -281,7 +282,7 @@ Module.register("MMM-MyCommute", {
 
 		if(dest.waypoints) {
 			const waypoints = dest.waypoints.split("|");
-			for (let i = 0; i < waypoints.length; i++) {
+			for(let i = 0; i < waypoints.length; i++) {
 				waypoints[i] = "via:" + encodeURIComponent(waypoints[i]);
 			}
 			params += "&waypoints=" + waypoints.join("|");
@@ -291,7 +292,7 @@ Module.register("MMM-MyCommute", {
 		if(dest.avoid) {
 			const a = dest.avoid.split("|");
 			let sanitizedAvoidOptions = "";
-			for (let i = 0; i < a.length; i++) {
+			for(let i = 0; i < a.length; i++) {
 				if (this.avoidOptions.indexOf(a[i]) !== -1) {
 					sanitizedAvoidOptions += (sanitizedAvoidOptions === "" ? a[i] : "|" + a[i]);
 				}
@@ -427,9 +428,9 @@ Module.register("MMM-MyCommute", {
 				symbolIcon = this.symbols[prediction.config.mode];
 			}
 
-			// different rendering for single route vs multiple
+			// Different rendering for single route vs multiple
 			if(prediction.error) {
-				//no routes available.	display an error instead.
+				//no routes available. Display an error instead.
 				const errorTxt = document.createElement("span");
 				errorTxt.classList.add("route-error");
 				errorTxt.innerHTML = "Error";
@@ -437,23 +438,24 @@ Module.register("MMM-MyCommute", {
 
 			}
 			else if(prediction.routes.length === 1 || !this.config.showSummary) {
-				let r = prediction.routes[0];
+				let route = prediction.routes[0];
 
 				// summary
 				if (this.config.showSummary) {
 					var singleSummary = document.createElement("div");
 					singleSummary.classList.add("route-summary");
-					if (r.transitInfo) {
-						symbolIcon = this.getTransitIcon(prediction.config,r);
-						this.buildTransitSummary(r.transitInfo, singleSummary);
-					} else {
-						singleSummary.innerHTML = r.summary;
+					if (route.transitInfo) {
+						symbolIcon = this.getTransitIcon(prediction.config,route);
+						this.buildTransitSummary(route.transitInfo, singleSummary);
 					}
-					singleSummary.appendChild(this.formatTime(r.time, r.timeInTraffic));
+					else {
+						singleSummary.innerHTML = route.summary;
+					}
+					singleSummary.appendChild(this.formatTime(route.time, route.timeInTraffic));
 					row.appendChild(singleSummary);
 				}
 				else {
-					row.appendChild(this.formatTime(r.time, r.timeInTraffic));
+					row.appendChild(this.formatTime(route.time, route.timeInTraffic));
 				}
 			}
 			else {
@@ -461,19 +463,19 @@ Module.register("MMM-MyCommute", {
 				for(let j = 0; j < prediction.routes.length; j++) {
 					const routeSummaryOuter = document.createElement("div");
 					routeSummaryOuter.classList.add("route-summary-outer");
-					let r = prediction.routes[j];
+					let route = prediction.routes[j];
 
 					var multiSummary = document.createElement("div");
 					multiSummary.classList.add("route-summary");
-					if(r.transitInfo) {
-						symbolIcon = this.getTransitIcon(prediction.config,r);
-						this.buildTransitSummary(r.transitInfo, multiSummary);
+					if(route.transitInfo) {
+						symbolIcon = this.getTransitIcon(prediction.config,route);
+						this.buildTransitSummary(route.transitInfo, multiSummary);
 					}
 					else {
-						multiSummary.innerHTML = r.summary;
+						multiSummary.innerHTML = route.summary;
 					}
 					routeSummaryOuter.appendChild(multiSummary);
-					routeSummaryOuter.appendChild(this.formatTime(r.time, r.timeInTraffic));
+					routeSummaryOuter.appendChild(this.formatTime(route.time, route.timeInTraffic));
 					row.appendChild(routeSummaryOuter);
 				}
 			}
