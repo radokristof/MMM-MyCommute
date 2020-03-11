@@ -160,8 +160,7 @@ Installed during installation
 - [moment](https://www.npmjs.com/package/moment)
 
 ## Special Thanks
-
-- [Jeff Clarke](https://github.com/jclarke000) for creating MMM-MyCommute, this has inspired all my additional changes.
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
 - [Dominic Marx](https://github.com/domsen123) for creating the original mrx-work-traffic that this module heavily borrows upon.
+- [Jeff Clarke](https://github.com/jclarke000) for creating MMM-MyCommute, this has inspired all my additional changes.
 - [Chris van Marle](https://github.com/qistoph) for adding extra features to the original version and helping to solve the issues in the current version.
