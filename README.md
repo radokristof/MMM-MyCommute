@@ -4,9 +4,13 @@ This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror/tree
 
 It shows your commute time using Google's Directions API (requires an API Key from Google).
 
-It is a fork of [jclarke0000's work](https://github.com/jclarke0000/MMM-MyCommute/)
+It is a fork of [qistoph's work](https://github.com/qistoph/MMM-MyCommute). My most modifications are merged into the original repository, however there might be differences.
 
 ![Screenshot](/screenshots/MMM-MyCommute-screenshot.png?raw=true "Screenshot")
+
+## Updating
+
+In a recent change the parameter `apikey` (no capitcal k) was renamed to `apiKey` (capital K). Please make sure, after updating you apply this change in your config.js too.
 
 ## Installation
 
@@ -15,7 +19,7 @@ It is a fork of [jclarke0000's work](https://github.com/jclarke0000/MMM-MyCommut
 3. Go to [Google Maps devtools](https://developers.google.com/maps/documentation/javascript/get-api-key) and get an API key.
 4. Enable [Directions API](https://console.cloud.google.com/marketplace/details/google/directions-backend.googleapis.com).
 5. **NOTE:** After the free period you might need to [enable billing](https://console.cloud.google.com/project/_/billing/enable).
-6. Restart MagicMirror<br>e.g. `pm2 restart mm`
+6. Restart MagicMirror<br>e.g. `pm2 restart MagicMirror`
 
 ## Billing
 
@@ -30,39 +34,6 @@ The default polling time is once every 10 minutes. That would ammount to an aver
 - Waypoints optimization
 
 The number of requests can easily be significantly reduced by using the `startTime` and `endTime`.
-
-## NOTE To those updating from previous verions
-
-You now configure the header in the standard way instead using the `headerText` and `showHeader` parameters. So if your config looked like this before:
-
-```JavaScript
-    {
-      module: 'MMM-MyCommute',
-      position: 'top_left',
-      classes: 'default everyone',
-      config: {
-        showHeader: true,
-        headerText: 'Traffic',
-        ...
-      }
-    }
-```
-
-change it to this:
-
-```JavaScript
-   {
-      module: 'MMM-MyCommute',
-      position: 'top_left',
-      header: 'Traffic',
-      classes: 'default everyone',
-      config: {
-        ...
-      }
-    }
-```
-
-If you don’t want a header, then just omit it.
 
 ## Config
 
@@ -193,3 +164,4 @@ Installed during installation
 - [Jeff Clarke](https://github.com/jclarke000) for creating MMM-MyCommute, this has inspired all my additional changes.
 - [Michael Teeuw](https://github.com/MichMich) for creating the awesome [MagicMirror2](https://github.com/MichMich/MagicMirror/tree/develop) project that made this module possible.
 - [Dominic Marx](https://github.com/domsen123) for creating the original mrx-work-traffic that this module heavily borrows upon.
+- [Chris van Marle](https://github.com/qistoph) for adding extra features to the original version and helping to solve the issues in the current version.
