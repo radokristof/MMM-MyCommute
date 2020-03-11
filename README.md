@@ -14,16 +14,16 @@ In a recent change the parameter `apikey` (no capitcal k) was renamed to `apiKey
 
 ## Installation
 
-1. Navigate into your MagicMirror `modules` folder and execute<br>`git clone https://github.com/qistoph/MMM-MyCommute.git`.
+1. Navigate into your MagicMirror `modules` folder and execute<br>`git clone https://github.com/radokristof/MMM-MyCommute.git`.
 2. Enter the `MMM-MyCommute` directory and execute `npm install`.
-3. Go to [Google Maps devtools](https://developers.google.com/maps/documentation/javascript/get-api-key) and get an API key.
+3. Go to [Google Maps DevTools](https://developers.google.com/maps/documentation/javascript/get-api-key) and get an API key.
 4. Enable [Directions API](https://console.cloud.google.com/marketplace/details/google/directions-backend.googleapis.com).
-5. **NOTE:** After the free period you might need to [enable billing](https://console.cloud.google.com/project/_/billing/enable).
+5. **NOTE:** You need to [enable billing](https://console.cloud.google.com/project/_/billing/enable), otherwise you can't use these APIs. However you get a free tier, so if you use it wisely, you don't have to pay anything. For details, see below.
 6. Restart MagicMirror<br>e.g. `pm2 restart MagicMirror`
 
 ## Billing
 
-According to the [billing information](https://cloud.google.com/maps-platform/pricing/): "you get $200 free usage every month for Maps, Routes, or Places. Based on the millions of users using our APIs today, most of them can continue to use Google Maps Platform for free with this credit."
+According to the [billing information](https://cloud.google.com/maps-platform/pricing/): "You get $200 free usage every month for Maps, Routes, or Places. Based on the millions of users using our APIs today, most of them can continue to use Google Maps Platform for free with this credit."
 
 The default polling time is once every 10 minutes. That would ammount to an average of 4464 requests per month (`60 / 10 * 24 * 31 = 4464`). For the Directions ($0.005/request) that totals to $22.32 per month. For Advanced Directions ($0.01/request) the total is $44.62 per month.
 
