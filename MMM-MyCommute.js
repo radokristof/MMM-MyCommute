@@ -241,7 +241,6 @@ Module.register("MMM-MyCommute", {
 			this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
 			Log.log(this.name + " requesting data from Google API");
 			this.inWindow = true;
-			this.isHidden = false;
 		}
 		else {
 			Log.log(this.name + " no destination available in the timeframe");
