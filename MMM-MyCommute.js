@@ -500,13 +500,19 @@ Module.register("MMM-MyCommute", {
 			this.lastUpdated = moment();
 			if(this.loading) {
 				this.loading = false;
-			}
-			if(this.isHidden) {
-				this.updateDom();
-				this.show(1000, { lockString: this.identifier });
+				if (this.isHidden) {
+					this.updateDom();
+					this.show(1000, { lockString: this.identifier });
+				}
+				else {
+					this.updateDom(1000);
+				}
 			}
 			else {
-				this.updateDom(1000);
+				this.updateDom();
+				if(this.isHidden) {
+					this.show(1000, { lockString: this.identifier });
+				}
 			}
 			this.isHidden = false;
 		}
