@@ -118,7 +118,7 @@ Module.register("MMM-MyCommute", {
 		this.inWindow = true;
 		this.isHidden = false;
 
-		// start data poll
+		// Start data poll
 		this.getData();
 		this.rescheduleInterval();
 	},
@@ -135,23 +135,15 @@ Module.register("MMM-MyCommute", {
 		}, this.config.pollFrequency);
 	},
 
-	suspended: false,
-
 	suspend: function() {
 		Log.log(this.name + " suspended");
-		if(!this.suspended) {
-			this.suspended = true;
-			clearInterval(this.interval);
-		}
+		clearInterval(this.interval);
 	},
 
 	resume: function() {
 		Log.log(this.name + " resumed");
-		if(this.suspended) {
-			this.suspended = false;
-			this.getData();
-			this.rescheduleInterval();
-		}
+		this.getData();
+		this.rescheduleInterval();
 	},
 
 	/*
@@ -500,7 +492,7 @@ Module.register("MMM-MyCommute", {
 			this.lastUpdated = moment();
 			if(this.loading) {
 				this.loading = false;
-				if (this.isHidden) {
+				if(this.hidden) {
 					this.updateDom();
 					this.show(1000, { lockString: this.identifier });
 				}
@@ -510,7 +502,7 @@ Module.register("MMM-MyCommute", {
 			}
 			else {
 				this.updateDom();
-				if(this.isHidden) {
+				if(this.hidden) {
 					this.show(1000, { lockString: this.identifier });
 				}
 			}
