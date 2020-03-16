@@ -116,7 +116,6 @@ Module.register("MMM-MyCommute", {
 		this.predictions = [];
 		this.loading = true;
 		this.inWindow = true;
-		this.isHidden = false;
 
 		// start data poll
 		this.getData();
@@ -234,7 +233,6 @@ Module.register("MMM-MyCommute", {
 			Log.log(this.name + " no destination available in the timeframe");
 			this.hide(1000, { lockString: this.identifier });
 			this.inWindow = false;
-			this.isHidden = true;
 		}
 	},
 
@@ -318,10 +316,10 @@ Module.register("MMM-MyCommute", {
 		let now = moment();
 		if(timeInTraffic != null) {
 			if(this.config.showArrivalTime) {
-				timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, {trim: this.config.travelTimeFormatTrim}) + " - " + now.add(Number(timeInTraffic), "seconds").format("HH:mm");
+				timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim}) + " - " + now.add(Number(timeInTraffic), "seconds").format("HH:mm");
 			}
 			else {
-				timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, {trim: this.config.travelTimeFormatTrim});
+				timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim});
 			}
 			const variance = timeInTraffic / time;
 			if(this.config.colorCodeTravelTime) {
@@ -488,28 +486,15 @@ Module.register("MMM-MyCommute", {
 			this.lastUpdated = moment();
 			if(this.loading) {
 				this.loading = false;
-				if (this.isHidden) {
-					this.updateDom();
-					this.show(1000, { lockString: this.identifier });
-				}
-				else {
-					this.updateDom(1000);
-				}
 			}
-			else {
-				this.updateDom();
-				if(this.isHidden) {
-					this.show(1000, { lockString: this.identifier });
-				}
-			}
-			this.isHidden = false;
+			this.updateDom();
+			this.show(1000, { lockString: this.identifier });
 		}
 	},
 
 	notificationReceived: function(notification, payload) {
 		if(notification === "DOM_OBJECTS_CREATED" && !this.inWindow) {
 			this.hide(0, { lockString: this.identifier });
-			this.isHidden = true;
 		}
 		else if (notification === "CALENDAR_EVENTS") {
 			this.setAppointmentDestinations(payload);
