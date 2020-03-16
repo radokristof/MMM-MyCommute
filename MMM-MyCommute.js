@@ -1,4 +1,3 @@
-
 /*********************************
 
     Magic Mirror Module:
@@ -86,28 +85,28 @@ Module.register("MMM-MyCommute", {
     ],
 
     symbols: {
-        "driving":          "car",
-        "walking":          "walk",
-        "bicycling":        "bike",
-        "transit":          "streetcar",
-        "tram":             "streetcar",
-        "bus":              "bus",
-        "subway":           "subway",
-        "train":            "train",
-        "rail":             "train",
-        "metro_rail":       "subway",
-        "monorail":         "train",
-        "heavy_rail":       "train",
-        "commuter_train":   "train",
+        "driving": "car",
+        "walking": "walk",
+        "bicycling": "bike",
+        "transit": "streetcar",
+        "tram": "streetcar",
+        "bus":  "bus",
+        "subway": "subway",
+        "train": "train",
+        "rail": "train",
+        "metro_rail": "subway",
+        "monorail": "train",
+        "heavy_rail": "train",
+        "commuter_train": "train",
         "high_speed_train": "train",
-        "intercity_bus":    "bus",
-        "trolleybus":       "streetcar",
-        "share_taxi":       "taxi",
-        "ferry":            "boat",
-        "cable_car":        "gondola",
-        "gondola_lift":     "gondola",
-        "funicular":        "gondola",
-        "other":            "streetcar"
+        "intercity_bus": "bus",
+        "trolleybus": "streetcar",
+        "share_taxi": "taxi",
+        "ferry": "boat",
+        "cable_car": "gondola",
+        "gondola_lift": "gondola",
+        "funicular": "gondola",
+        "other": "streetcar"
     },
 
     start: function() {
@@ -126,7 +125,6 @@ Module.register("MMM-MyCommute", {
         if(this.interval !== null) {
             clearInterval(this.interval);
         }
-
         this.interval = setInterval(function() {
             self.getData();
         }, this.config.pollFrequency);
@@ -176,7 +174,6 @@ Module.register("MMM-MyCommute", {
         if(this.config.calendarOptions.length === 0) {
             return;
         }
-
         for(let eventIndex = 0; eventIndex < payload.length && this.appointmentDestinations.length < this.config.maxCalendarEvents; ++eventIndex) {
             const calendarEvent = payload[eventIndex];
             if("location" in calendarEvent &&
@@ -193,7 +190,6 @@ Module.register("MMM-MyCommute", {
                 );
             }
         }
-
         this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
     },
 
@@ -203,7 +199,6 @@ Module.register("MMM-MyCommute", {
 
     getData: function() {
         Log.log(this.name + " refreshing routes");
-
         let destinationGetInfo = [];
         const destinations = this.getDestinations();
         for(let destinationIndex = 0; destinationIndex < destinations.length; destinationIndex++) {
@@ -218,7 +213,6 @@ Module.register("MMM-MyCommute", {
                 destinationGetInfo.push({ url:url, config: destination});
             }
         }
-
         if(destinationGetInfo.length > 0) {
             this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
             Log.log(this.name + " requesting data from Google API");
@@ -232,7 +226,6 @@ Module.register("MMM-MyCommute", {
     },
 
     getParams: function(dest) {
-
         let params = "?";
         params += "origin=" + encodeURIComponent(dest.origin || this.config.origin);
         params += "&destination=" + encodeURIComponent(dest.destination);
@@ -292,13 +285,11 @@ Module.register("MMM-MyCommute", {
             params += "&departure_time=now";	// Needed for time based on traffic conditions
         }
         return params;
-
     },
 
     svgIconFactory: function(glyph) {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svg.setAttributeNS(null, "class", "transit-mode-icon");
-
         const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
         use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "modules/MMM-MyCommute/icon_sprite.svg#" + glyph);
         svg.appendChild(use);
@@ -360,7 +351,6 @@ Module.register("MMM-MyCommute", {
     },
 
     buildTransitSummary: function(transitInfo, summaryContainer) {
-
         for(let transitInfoIndex = 0; transitInfoIndex < transitInfo.length; transitInfoIndex++) {
             const transitLeg = document.createElement("span");
             transitLeg.classList.add("transit-leg");
@@ -403,7 +393,6 @@ Module.register("MMM-MyCommute", {
             if(destinations[predictionIndex].color) {
                 icon.setAttribute("style", "color:" + prediction.config.color);
             }
-
             if(prediction.config.mode && this.symbols[prediction.config.mode]) {
                 symbolIcon = this.symbols[prediction.config.mode];
             }
@@ -447,7 +436,7 @@ Module.register("MMM-MyCommute", {
                     var multiSummary = document.createElement("div");
                     multiSummary.classList.add("route-summary");
                     if(route.transitInfo) {
-                        symbolIcon = this.getTransitIcon(prediction.config,route);
+                        symbolIcon = this.getTransitIcon(prediction.config, route);
                         this.buildTransitSummary(route.transitInfo, multiSummary);
                     }
                     else {
