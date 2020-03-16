@@ -178,8 +178,7 @@ Module.register("MMM-MyCommute", {
             const calendarEvent = payload[eventIndex];
             if("location" in calendarEvent &&
                     calendarEvent.location !== undefined &&
-                    calendarEvent.location !== false &&
-                    calendarEvent.startDate < (Date.now() + this.config.maxCalendarTime))
+                    calendarEvent.location !== false)
             {
                 this.appointmentDestinations.push.apply(this.appointmentDestinations,
                     this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
@@ -188,13 +187,24 @@ Module.register("MMM-MyCommute", {
                         arrival_time: calendarEvent.startDate
                     }))
                 );
+                Log.log(this.name + "Calendar route: " + calendarEvent.title);
             }
         }
         this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
+        //this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: this.appointmentDestinations, instanceId: this.identifier, calendar: true });
+
+    },
+
+    getAppointmentDestinations: function() {
+        return this.config.appointmentDestinations;
     },
 
     getDestinations: function() {
-        return this.config.destinations.concat(this.appointmentDestinations);
+        return this.config.destinations;
+    },
+
+    getCalendarData: function(payload) {
+
     },
 
     getData: function() {
@@ -214,7 +224,7 @@ Module.register("MMM-MyCommute", {
             }
         }
         if(destinationGetInfo.length > 0) {
-            this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
+            this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier, calendar: false });
             Log.log(this.name + " requesting data from Google API");
             this.inWindow = true;
         }
@@ -472,6 +482,9 @@ Module.register("MMM-MyCommute", {
             }
             this.updateDom();
             this.show(1000, { lockString: this.identifier });
+        }
+        else if(notification === "GOOGLE_TRAFFIC_PUT" + this.identifier) {
+            this.getAppointmentDestinations(payload);
         }
     },
 
