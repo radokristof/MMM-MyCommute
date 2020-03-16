@@ -3,7 +3,7 @@
   padding: 1px;
   border-bottom: solid 1px #222;
   min-height: 35px;
-  min-width: 350px;
+  min-width: 345px;
 }
 
 .MMM-MyCommute .transit-mode {
@@ -119,5 +119,5 @@
 }
 
 .MMM-MyCommute .route-summary-outer > .route-summary {
-  max-width: 195px;
+  max-width: 190px;
 }
