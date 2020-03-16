@@ -126,7 +126,6 @@ Module.register("MMM-MyCommute", {
 	rescheduleInterval: function() {
 		const self = this;
 		if(this.interval !== null) {
-			// Clear current interval, just in case
 			clearInterval(this.interval);
 		}
 
@@ -135,23 +134,12 @@ Module.register("MMM-MyCommute", {
 		}, this.config.pollFrequency);
 	},
 
-	suspended: false,
-
 	suspend: function() {
-		Log.log(this.name + " suspended");
-		if(!this.suspended) {
-			this.suspended = true;
-			clearInterval(this.interval);
-		}
+		Log.log(this.name + " suspended.");
 	},
 
 	resume: function() {
-		Log.log(this.name + " resumed");
-		if(this.suspended) {
-			this.suspended = false;
-			this.getData();
-			this.rescheduleInterval();
-		}
+		Log.log(this.name + " resumed.");
 	},
 
 	/*
@@ -231,7 +219,7 @@ Module.register("MMM-MyCommute", {
 			const destEndTime = destination.endTime || "23:59";
 			const destHideDays = destination.hideDays || [];
 			if (this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-				Log.log(this.name + " destination {} is in window", destination);
+				Log.log(this.name + " destination " + destination + " is in window");
 				const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
 				destinationGetInfo.push({ url:url, config: destination});
 			}
