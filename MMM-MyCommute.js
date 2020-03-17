@@ -157,7 +157,6 @@ Module.register("MMM-MyCommute", {
 
     */
     isInWindow: function(start, end, hideDays) {
-
         const now = moment();
         const startTimeSplit = start.split(":");
         const endTimeSplit = end.split(":");
@@ -191,8 +190,7 @@ Module.register("MMM-MyCommute", {
             }
         }
         this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
-        //this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: this.appointmentDestinations, instanceId: this.identifier, calendar: true });
-
+        this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: this.appointmentDestinations, instanceId: this.identifier, calendar: true });
     },
 
     getAppointmentDestinations: function() {
@@ -204,7 +202,22 @@ Module.register("MMM-MyCommute", {
     },
 
     getCalendarData: function(payload) {
+        for(let routesIndex = 0; routesIndex < payload.length; routesIndex++) {
+            let routePrediction = payload[routesIndex];
+            let now = moment();
+            for(let routeIndex = 0; routeIndex < payload.routes.length; routeIndex++) {
+                let route = routePrediction.routes[routeIndex];
+                let timeInTraffic = route.timeInTraffic;
+                if(timeInTraffic == null) {
+                    timeInTraffic = route.time;
+                }
 
+                let routeTime = moment.duration(Number(timeInTraffic), "seconds");
+                if(route.config.label === this.appointmentDestinations[0].config.label) {
+
+                }
+            }
+        }
     },
 
     getData: function() {
