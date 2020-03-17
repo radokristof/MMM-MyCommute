@@ -118,7 +118,7 @@ Additionally MMM-MyCommute can show travel times to upcoming events in the defau
 Option              | Description
 ------------------- | -----------
 `maxCalendarEvents` | Number of routes to show.<br><br>**Type:** `int`<br>Defaults to `0`
-`maxCalendarTime`   | Show routes only for appointments within this timeframe (in milliseconds).<br><br>**Type:** `int`<br>Defaults to `24 * 60 * 60 * 1000` (1 day)
+`calendarOffset`    | Offset time before showing module. How many minutes before start time should show destination.<br><br>**Type:** `int`<br>Defaults to `25 * 60 * 1000` (25 minutes)
 `calendarOptions`   | An array like the regular `destinations`. For each event all of these options are added as a route. All options from above can be used, except that `label` will be overwritten with the event subject and `destination` with the event location.<br><br>**Type:** `array`<br>Defaults to `[{mode: 'driving'}]`
 
 Here is an example of an entry in `config.js` including calendar event routes

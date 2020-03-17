@@ -29,7 +29,7 @@ Module.register("MMM-MyCommute", {
         travelTimeFormatTrim: "left",
         pollFrequency: 10 * 60 * 1000,
         maxCalendarEvents: 0,
-        maxCalendarTime: 24 * 60 * 60 * 1000,
+        calendarOffset: 25 * 60 * 1000,
         calendarOptions: [ { mode: "driving" } ],
         showArrivalTime: true, 
         arrivalTimeFormat: "HH:mm",
@@ -205,16 +205,19 @@ Module.register("MMM-MyCommute", {
         for(let routesIndex = 0; routesIndex < payload.length; routesIndex++) {
             let routePrediction = payload[routesIndex];
             let now = moment();
+            let offset = moment().duration(Number(this.config.calendarOffset));
             for(let routeIndex = 0; routeIndex < payload.routes.length; routeIndex++) {
                 let route = routePrediction.routes[routeIndex];
                 let timeInTraffic = route.timeInTraffic;
+
                 if(timeInTraffic == null) {
                     timeInTraffic = route.time;
                 }
-
                 let routeTime = moment.duration(Number(timeInTraffic), "seconds");
-                if(route.config.label === this.appointmentDestinations[0].config.label) {
+                let routeTimePlusOffset = routeTime.add(offset);
 
+                for(let appointmentsIndex = 0; appointmentsIndex < this.appointmentDestinations.length; appointmentsIndex++) {
+                    let startTime = moment().millisecond(Number(this.appointmentDestinations[appointmentsIndex].config.startDate));
                 }
             }
         }
@@ -233,7 +236,7 @@ Module.register("MMM-MyCommute", {
             if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
                 Log.log(this.name + " destination " + destination + " is in window");
                 const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
-                destinationGetInfo.push({ url:url, config: destination});
+                destinationGetInfo.push({ url:url, config: destination });
             }
         }
         if(destinationGetInfo.length > 0) {
