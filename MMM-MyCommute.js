@@ -12,7 +12,7 @@
 
 *********************************/
 
-/* global config, Module, Log, moment */
+/* global config, Module, Log, moment, cronJob */
 
 Module.register("MMM-MyCommute", {
     defaults: {
@@ -38,11 +38,13 @@ Module.register("MMM-MyCommute", {
                 destination: "40 Bay St, Toronto, ON M5J 2X2",
                 label: "Air Canada Centre",
                 mode: "walking",
+                cron: "0 0/10 6,7,8,9,10 ? * MON,TUE,WED,THU,FRI *"
             },
             {
                 destination: "317 Dundas St W, Toronto, ON M5T 1G4",
                 label: "Art Gallery of Ontario",
                 mode: "transit",
+                cron: "0 0/10 6,7,8,9,10 ? * MON,TUE,WED,THU,FRI *"
             }
         ]
     },
@@ -116,18 +118,7 @@ Module.register("MMM-MyCommute", {
         this.loading = true;
         this.inWindow = true;
 
-        this.getData();
-        this.rescheduleInterval();
-    },
-
-    rescheduleInterval: function() {
-        const self = this;
-        if(this.interval !== null) {
-            clearInterval(this.interval);
-        }
-        this.interval = setInterval(function() {
-            self.getData();
-        }, this.config.pollFrequency);
+        this.createCronJobs();
     },
 
     suspend: function() {
@@ -138,33 +129,48 @@ Module.register("MMM-MyCommute", {
         Log.log(this.name + " resumed.");
     },
 
-    /*
-        function isInWindow()
+    cronJobs: [],
 
-        @param start
-            STRING display start time in 24 hour format e.g.: 06:00
+    filteredDestinations: [],
 
-        @param end
-            STRING display end time in 24 hour format e.g.: 10:00
+    filterUniquePrediction: function(payload) {
+        for(let i = 0; i < this.predictions.length; i++) {
+            if(this.predictions[i].config.label === payload.config.label) {
+                this.predictions[i] = payload;
+            }
+        }
+        this.predictions.push(payload);
+    },
 
-        @param hideDays
-            ARRAY of numbers representing days of the week during which
-            this tested item shall not be displayed.	Sun = 0, Sat = 6
-            e.g.: [3,4] to hide the module on Wed & Thurs
+    filterUniqueDestination: function(element) {
+        for(let i = 0; i < this.filteredDestinations.length; i++) {
+            if(this.filteredDestinations[i].destination === element.destination) {
+                return;
+            }
+        }
+        this.filteredDestinations.push(element);
+    },
 
-        @return returns TRUE if current time is within start and end AND
-        today is not in the list of days to hide.
-
-    */
-    isInWindow: function(start, end, hideDays) {
-
-        const now = moment();
-        const startTimeSplit = start.split(":");
-        const endTimeSplit = end.split(":");
-        const startTime = moment().hour(startTimeSplit[0]).minute(startTimeSplit[1]);
-        const endTime = moment().hour(endTimeSplit[0]).minute(endTimeSplit[1]);
-
-        return !(now.isBefore(startTime) || now.isAfter(endTime) || hideDays.indexOf(now.day()) !== -1);
+    createCronJobs: function() {
+        const self = this;
+        for(let i = 0; i < this.config.destination.length; i++) {
+            let job;
+            if(this.config.destination[i].cron) {
+                Log.log(this.name + " adding CronJob with expression: " + this.config.destination[i].cron);
+                job = new cronJob(this.config.destination[i].cron, function () {
+                    self.filterUniqueDestination(self.config.destination[i]);
+                    self.getData(self.config.destination[i]);
+                })
+            }
+            else {
+                job = new cronJob("0 0/10 0 ? * * *", function () {
+                    self.filterUniqueDestination(self.config.destination[i]);
+                    self.getData(self.config.destination[i]);
+                })
+            }
+            job.start();
+            this.cronJobs.push(job);
+        }
     },
 
     appointmentDestinations: [],
@@ -194,25 +200,16 @@ Module.register("MMM-MyCommute", {
     },
 
     getDestinations: function() {
-        return this.config.destinations.concat(this.appointmentDestinations);
+        return this.filteredDestinations;
     },
 
-    getData: function() {
+    getData: function(destination) {
         Log.log(this.name + " refreshing routes");
         let destinationGetInfo = [];
-        const destinations = this.getDestinations();
-        for(let destinationIndex = 0; destinationIndex < destinations.length; destinationIndex++) {
-            const destination = destinations[destinationIndex];
-            const destStartTime = destination.startTime || "00:00";
-            const destEndTime = destination.endTime || "23:59";
-            const destHideDays = destination.hideDays || [];
+        Log.log(this.name + " destination " + destination + " is in window");
+        const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
+        destinationGetInfo.push({ url:url, config: destination});
 
-            if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-                Log.log(this.name + " destination " + destination + " is in window");
-                const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
-                destinationGetInfo.push({ url:url, config: destination});
-            }
-        }
         if(destinationGetInfo.length > 0) {
             this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
             Log.log(this.name + " requesting data from Google API");
@@ -465,11 +462,11 @@ Module.register("MMM-MyCommute", {
 
     socketNotificationReceived: function(notification, payload) {
         if(notification === "GOOGLE_TRAFFIC_RESPONSE" + this.identifier) {
-            this.predictions = payload;
             this.lastUpdated = moment();
             if(this.loading) {
                 this.loading = false;
             }
+            this.filterUniquePrediction(payload);
             this.updateDom();
             this.show(1000, { lockString: this.identifier });
         }
