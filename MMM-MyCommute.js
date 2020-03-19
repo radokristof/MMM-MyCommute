@@ -57,7 +57,11 @@ Module.register("MMM-MyCommute", {
     },
 
     getScripts: function() {
-        return [ "moment.js", this.file("node_modules/moment-duration-format/lib/moment-duration-format.js") ];
+        return [
+            "moment.js",
+            this.file("node_modules/moment-duration-format/lib/moment-duration-format.js"),
+            this.file("node_modules/cron/lib/cron.js")
+        ];
     },
 
     getStyles: function () {
@@ -157,13 +161,13 @@ Module.register("MMM-MyCommute", {
             let job;
             if(this.config.destination[i].cron) {
                 Log.log(this.name + " adding CronJob with expression: " + this.config.destination[i].cron);
-                job = new cronJob(this.config.destination[i].cron, function () {
+                job = new CronJob(this.config.destination[i].cron, function () {
                     self.filterUniqueDestination(self.config.destination[i]);
                     self.getData(self.config.destination[i]);
                 })
             }
             else {
-                job = new cronJob("0 0/10 0 ? * * *", function () {
+                job = new CronJob("0 0/10 0 ? * * *", function () {
                     self.filterUniqueDestination(self.config.destination[i]);
                     self.getData(self.config.destination[i]);
                 })

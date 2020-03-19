@@ -8,7 +8,6 @@
 const NodeHelper = require("node_helper");
 const request = require("request");
 const moment = require("moment");
-const cronJob = require("cron").CronJob;
 
 module.exports = NodeHelper.create({
     start: function () {
