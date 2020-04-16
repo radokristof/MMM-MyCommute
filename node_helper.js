@@ -76,7 +76,7 @@ module.exports = NodeHelper.create({
                                     const travelModes = route.legs[0].steps.map(s => s.travel_mode).join(", ");
                                     console.log("MMM-MyCommute: transit directions does not contain any transits (" + travelModes + ")");
                                     prediction.error = true;
-                                    prediction.error_msg = "MMM-MyCommute: transit directrions does not contain any transits (" + travelModes + ")";
+                                    prediction.error_msg = "Transit directions does not contain any transits (" + travelModes + ")";
                                 }
                             }
                             routeList.push(routeObj);

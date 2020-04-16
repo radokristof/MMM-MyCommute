@@ -50,7 +50,8 @@ Module.register("MMM-MyCommute", {
     getTranslations: function() {
         return {
             en: "translations/en.json",
-            hu: "translations/hu.json"
+            hu: "translations/hu.json",
+            nl: "translations/nl.json"
         };
     },
 
