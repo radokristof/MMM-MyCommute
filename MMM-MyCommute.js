@@ -403,9 +403,9 @@ Module.register("MMM-MyCommute", {
                 // No routes available. Display an error instead.
                 const errorTxt = document.createElement("span");
                 errorTxt.classList.add("route-error");
-                errorTxt.innerHTML = "Error";
+                errorTxt.innerHTML = "Error: " + prediction.error_msg;
                 row.appendChild(errorTxt);
-
+                console.error("MMM-MyCommute error: " + prediction.error_msg, "Config: ", prediction.config);
             }
             else if(prediction.routes.length === 1 || !this.config.showSummary) {
                 let route = prediction.routes[0];
