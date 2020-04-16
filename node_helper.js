@@ -14,10 +14,10 @@ module.exports = NodeHelper.create({
         console.log("====================== Starting node_helper for module [" + this.name + "]");
     },
 
-    // subclass socketNotificationReceived
+    // Subclass socketNotificationReceived
     socketNotificationReceived: function (notification, payload) {
         if (notification === "GOOGLE_TRAFFIC_GET") {
-            //first data pull after new config
+            // First data pull after new config
             this.getPredictions(payload);
         }
     },
