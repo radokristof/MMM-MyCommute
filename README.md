@@ -8,10 +8,6 @@ It is a fork of [qistoph's work](https://github.com/qistoph/MMM-MyCommute). My m
 
 ![Screenshot](/screenshots/MMM-MyCommute-screenshot.png?raw=true "Screenshot")
 
-## Updating
-
-In a recent change the parameter `apikey` (no capitcal k) was renamed to `apiKey` (capital K). Please make sure, after updating you apply this change in your config.js too.
-
 ## Installation
 
 1. Navigate into your MagicMirror `modules` folder and execute<br>`git clone https://github.com/radokristof/MMM-MyCommute.git`.
