@@ -410,7 +410,7 @@ Module.register("MMM-MyCommute", {
                 let route = prediction.routes[0];
                 // Summary
                 if(this.config.showSummary) {
-                    var singleSummary = document.createElement("div");
+                    let singleSummary = document.createElement("div");
                     singleSummary.classList.add("route-summary");
                     if (route.transitInfo) {
                         symbolIcon = this.getTransitIcon(prediction.config,route);
@@ -433,7 +433,7 @@ Module.register("MMM-MyCommute", {
                     routeSummaryOuter.classList.add("route-summary-outer");
                     let route = prediction.routes[predictionRoutesIndex];
 
-                    var multiSummary = document.createElement("div");
+                    let multiSummary = document.createElement("div");
                     multiSummary.classList.add("route-summary");
                     if(route.transitInfo) {
                         symbolIcon = this.getTransitIcon(prediction.config, route);
