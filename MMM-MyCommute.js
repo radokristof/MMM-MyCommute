@@ -282,6 +282,7 @@ Module.register("MMM-MyCommute", {
         }
 
         if (dest.arrival_time) {
+            Log.log(this.name + "using arrival time: " + dest.arrival_time)
             params += "&arrival_time=" + dest.arrival_time;
         }
         else {

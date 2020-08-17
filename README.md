@@ -54,7 +54,7 @@ Each object in the `destinations` array can have the following parameters:
 
 Option                       | Description
 ---------------------------- | -----------
-`destination`                | **REQUIRED** The address of the destination<br><br>**Type:** `string`
+`destination`                | **REQUIRED** The address of the destination<br>You can use real address here or GPS coordinates for precise location<br><br>**Type:** `string`
 `label`                      | **REQUIRED** How you would like this displayed on your MagicMirror.<br><br>**Type:** `string`
 `mode`                       | Transportation mode, one of the following: `driving`, `walking`, `bicycling`, `transit`.<br><br>**Type:** `string`<br>Defaults to `driving`.
 `transitMode`                | If `mode` = `transit` you can additionally specify one or more of the following: `bus`, `subway`, `train`, `tram`, or `rail`.<br><br>**Type:** `string`.<br>Separate multiple entries with the `\|` character (e.g.: `"transitMode" : "bus\|subway\|tram"`). Specifying `rail`indicates that the calculated route should prefer travel by train, tram, light rail, and subway. Equivalenet to `train\|tram\|subway`
