@@ -197,13 +197,18 @@ Module.register("MMM-MyCommute", {
     },
 
     getDestinations: function() {
-        return this.config.destinations.concat(this.appointmentDestinations);
+        return this.config.destinations;
+    },
+
+    getAppointmentDestinations: function() {
+        return this.appointmentDestinations;
     },
 
     getData: function() {
         Log.log(this.name + " refreshing routes");
         let destinationGetInfo = [];
         const destinations = this.getDestinations();
+        const appointmentDestinations = this.getAppointmentDestinations();
         for(let destinationIndex = 0; destinationIndex < destinations.length; destinationIndex++) {
             const destination = destinations[destinationIndex];
             const destStartTime = destination.startTime || "00:00";
@@ -216,6 +221,7 @@ Module.register("MMM-MyCommute", {
                 destinationGetInfo.push({ url:url, config: destination});
             }
         }
+
         if(destinationGetInfo.length > 0) {
             this.sendSocketNotification("GOOGLE_TRAFFIC_GET", { destinations: destinationGetInfo, instanceId: this.identifier });
             Log.log(this.name + " requesting data from Google API");
@@ -282,7 +288,7 @@ Module.register("MMM-MyCommute", {
         }
 
         if (dest.arrival_time) {
-            Log.log(this.name + "using arrival time: " + dest.arrival_time)
+            Log.log(this.name + " Using arrival time: " + dest.arrival_time)
             params += "&arrival_time=" + dest.arrival_time;
         }
         else {
