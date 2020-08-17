@@ -301,40 +301,40 @@ Module.register("MMM-MyCommute", {
     },
 
     formatTime: function(time, timeInTraffic) {
-        const timeEl = document.createElement("span");
-        timeEl.classList.add("travel-time");
+        const timeElement = document.createElement("span");
+        timeElement.classList.add("travel-time");
         let now = moment();
         if(timeInTraffic != null) {
             if(this.config.showArrivalTime) {
-                timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim }) + " - " +
+                timeElement.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim }) + " - " +
                     now.add(Number(timeInTraffic), "seconds").format(this.config.arrivalTimeFormat);
             }
             else {
-                timeEl.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim });
+                timeElement.innerHTML = moment.duration(Number(timeInTraffic), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim });
             }
             const variance = timeInTraffic / time;
             if(this.config.colorCodeTravelTime) {
                 if (variance > this.config.poorTimeThreshold) {
-                    timeEl.classList.add("status-poor");
+                    timeElement.classList.add("status-poor");
                 }
                 else if (variance > this.config.moderateTimeThreshold) {
-                    timeEl.classList.add("status-moderate");
+                    timeElement.classList.add("status-moderate");
                 }
                 else {
-                    timeEl.classList.add("status-good");
+                    timeElement.classList.add("status-good");
                 }
             }
         }
         else {
             if(this.config.showArrivalTime) {
-                timeEl.innerHTML = moment.duration(Number(time), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim }) + " - " + now.add(Number(time), "seconds").format(this.config.arrivalTimeFormat);
+                timeElement.innerHTML = moment.duration(Number(time), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim }) + " - " + now.add(Number(time), "seconds").format(this.config.arrivalTimeFormat);
             }
             else {
-                timeEl.innerHTML = moment.duration(Number(time), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim });
+                timeElement.innerHTML = moment.duration(Number(time), "seconds").format(this.config.travelTimeFormat, { trim: this.config.travelTimeFormatTrim });
             }
-            timeEl.classList.add("status-good");
+            timeElement.classList.add("status-good");
         }
-        return timeEl;
+        return timeElement;
     },
 
     getTransitIcon: function(dest, route) {
