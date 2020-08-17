@@ -13,7 +13,6 @@
 *********************************/
 
 /* global config, Module, Log, moment */
-
 Module.register("MMM-MyCommute", {
     defaults: {
         apiKey: "",
@@ -31,7 +30,7 @@ Module.register("MMM-MyCommute", {
         maxCalendarEvents: 0,
         maxCalendarTime: 24 * 60 * 60 * 1000,
         calendarOptions: [ { mode: "driving" } ],
-        showArrivalTime: true, 
+        showArrivalTime: true,
         arrivalTimeFormat: "HH:mm",
         destinations: [
             {
@@ -158,7 +157,6 @@ Module.register("MMM-MyCommute", {
 
     */
     isInWindow: function(start, end, hideDays) {
-
         const now = moment();
         const startTimeSplit = start.split(":");
         const endTimeSplit = end.split(":");
@@ -210,7 +208,7 @@ Module.register("MMM-MyCommute", {
             const destHideDays = destination.hideDays || [];
 
             if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-                Log.log(this.name + " destination " + destination + " is in window");
+                Log.log(this.name + " destination " + destination.origin + " is in window");
                 const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
                 destinationGetInfo.push({ url:url, config: destination});
             }
@@ -284,7 +282,7 @@ Module.register("MMM-MyCommute", {
             params += "&arrival_time=" + dest.arrival_time;
         }
         else {
-            params += "&departure_time=now";	// Needed for time based on traffic conditions
+            params += "&departure_time=now";
         }
         return params;
     },
