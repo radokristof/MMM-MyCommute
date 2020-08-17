@@ -206,14 +206,26 @@ Module.register("MMM-MyCommute", {
         const destinations = this.getDestinations();
         for(let destinationIndex = 0; destinationIndex < destinations.length; destinationIndex++) {
             const destination = destinations[destinationIndex];
-            const destStartTime = destination.startTime || "00:00";
-            const destEndTime = destination.endTime || "23:59";
             const destHideDays = destination.hideDays || [];
+            if(Array.isArray(destination.startTime) && Array.isArray(destination.endTime)) {
+                for(let index = 0; index < destination.startTime.length; index++) {
+                    if(this.isInWindow(destination.startTime[index], destination.endTime[index], destHideDays)) {
+                        Log.log(this.name + " destination " + destination.origin + " is in timeframe");
+                        const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
+                        destinationGetInfo.push({ url:url, config: destination});
+                        break;
+                    }
+                }
+            }
+            else {
+                const destStartTime = destination.startTime || "00:00";
+                const destEndTime = destination.endTime || "23:59";
 
-            if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-                Log.log(this.name + " destination " + destination.origin + " is in timeframe");
-                const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
-                destinationGetInfo.push({ url:url, config: destination});
+                if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
+                    Log.log(this.name + " destination " + destination.origin + " is in timeframe");
+                    const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
+                    destinationGetInfo.push({ url:url, config: destination});
+                }
             }
         }
         if(destinationGetInfo.length > 0) {
