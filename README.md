@@ -63,10 +63,10 @@ Option                       | Description
 `avoid`                      | If specified, will instruct the Google API to find a route that avoids one or more of the following: `tolls`,`highways`,`ferries`,`indoor`.<br><br>**Type:** `string`.<br>Separate multiple entries with the `\|` character (e.g.: `"avoid" : "highways\|tolls"`).
 `alternatives`               | If specified, will instruct the Google API to provide times for alternate routes. Must be used with `showSummary: true`<br><br>**Type:** `boolean`
 `color`                      | If specified, the colour for the icon in hexadecimal format (e.g.: `"#82BAE5"`)<br><br>**Type:** `string`<br>Defaults to white.
-`startTime`                  | The start time of the window during which this destination wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `00:00` (i.e.: midnight)
-`endTime`                    | The end time of the window during which this destination wil be visible.<br><br>**Type:** `string`<br>Must be in 24-hour time format. Defaults to `23:59` (i.e.: one minute before midnight).
+`startTime`                  | The start time of the window during which this destination wil be visible.<br><br>**Type:** `string` or `Array`<br>Must be in 24-hour time format. Defaults to `00:00` (i.e.: midnight).<br>Example: `13:00` or `['13:00', 17:00']`.
+`endTime`                    | The end time of the window during which this destination wil be visible.<br><br>**Type:** `string` or `Array`<br>Must be in 24-hour time format. Defaults to `23:59` (i.e.: one minute before midnight).<br>Example: `18:00` or `['18:00', 20:00']`.
 `hideDays`                   | A list of numbers representing days of the week to hide the destination.<br><br>**Type:** `array`<br>Valid numbers are 0 through 6, 0 = Sunday, 6 = Saturday.<br>e.g.: `[0,6]` hides the destination on weekends.
-`origin`                     | Optionally overide the global origin for a single destination.
+`origin`                     | Optionally override the global origin for a single destination.
 
 Here is an example of an entry in `config.js`
 
