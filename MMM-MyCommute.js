@@ -180,14 +180,17 @@ Module.register("MMM-MyCommute", {
                     calendarEvent.location !== false &&
                     calendarEvent.startDate < (Date.now() + this.config.maxCalendarTime))
             {
-                this.appointmentDestinations.push.apply(this.appointmentDestinations,
-                    this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
-                        label: calendarEvent.title,
-                        destination: calendarEvent.location,
-                        arrival_time: calendarEvent.startDate / 1000,
-                        color: calendarEvent.color
-                    }))
-                );
+                if(Date.now() < calendarEvent.startDate) {
+                    Log.log(this.name + " adding calendar event " + calendarEvent.title)
+                    this.appointmentDestinations.push.apply(this.appointmentDestinations,
+                        this.config.calendarOptions.map( calOpt => Object.assign({}, calOpt, {
+                            label: calendarEvent.title,
+                            destination: calendarEvent.location,
+                            arrival_time: calendarEvent.startDate / 1000,
+                            color: calendarEvent.color
+                        }))
+                    );
+                }
             }
         }
         this.appointmentDestinations = this.appointmentDestinations.slice(0, this.config.maxCalendarEvents);
@@ -208,7 +211,7 @@ Module.register("MMM-MyCommute", {
             const destHideDays = destination.hideDays || [];
 
             if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
-                Log.log(this.name + " destination " + destination.origin + " is in window");
+                Log.log(this.name + " destination " + destination.origin + " is in timeframe");
                 const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
                 destinationGetInfo.push({ url:url, config: destination});
             }
