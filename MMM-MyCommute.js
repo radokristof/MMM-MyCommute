@@ -209,6 +209,7 @@ Module.register("MMM-MyCommute", {
         let destinationGetInfo = [];
         const destinations = this.getDestinations();
         const appointmentDestinations = this.getAppointmentDestinations();
+        const baseUrl = "https://maps.googleapis.com/maps/api/directions/json";
         for(let destinationIndex = 0; destinationIndex < destinations.length; destinationIndex++) {
             const destination = destinations[destinationIndex];
             const destHideDays = destination.hideDays || [];
@@ -216,7 +217,7 @@ Module.register("MMM-MyCommute", {
                 for(let index = 0; index < destination.startTime.length; index++) {
                     if(this.isInWindow(destination.startTime[index], destination.endTime[index], destHideDays)) {
                         Log.log(this.name + " destination " + destination.origin + " is in timeframe");
-                        const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
+                        const url = baseUrl + this.getParams(destination);
                         destinationGetInfo.push({ url:url, config: destination});
                         break;
                     }
@@ -228,10 +229,15 @@ Module.register("MMM-MyCommute", {
 
                 if(this.isInWindow(destStartTime, destEndTime, destHideDays)) {
                     Log.log(this.name + " destination " + destination.origin + " is in timeframe");
-                    const url = "https://maps.googleapis.com/maps/api/directions/json" + this.getParams(destination);
+                    const url = baseUrl + this.getParams(destination);
                     destinationGetInfo.push({ url:url, config: destination});
                 }
             }
+        }
+
+        for(let index = 0; index < appointmentDestinations.length; index++) {
+            const url = baseUrl + this.getParams(appointmentDestinations[index]);
+            destinationGetInfo.push({ url: url, config: appointmentDestinations[index]});
         }
 
         if(destinationGetInfo.length > 0) {
